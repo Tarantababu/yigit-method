@@ -88,7 +88,7 @@
       }
     ]
   },
-   "Shopping": {
+  "Shopping": {
     "title": "Shopping in the Supermarket",
     "questions": [
       {
@@ -356,8 +356,10 @@
       {
         "prompt": "Do you know how we can reach our destination if the train is canceled? Maybe we could take a bus or another train, but we need to check the schedule.",
         "answer": "Wissen Sie, wie wir unser Ziel erreichen können, wenn der Zug ausfällt? Vielleicht könnten wir einen Bus oder einen anderen Zug nehmen, aber wir müssen den Fahrplan überprüfen."
-      },
-      "Introducing Yourself": {
+      }
+    ]
+  },
+  "Introducing Yourself": {
     "title": "Introducing Yourself at the Job Center",
     "questions": [
       {
@@ -452,8 +454,6 @@
         "prompt": "I hope to find a suitable job soon. Thank you for your help.",
         "answer": "Ich hoffe, bald einen passenden Job zu finden. Danke für Ihre Hilfe."
       }
-    ]
-  }
     ]
   }
 }
