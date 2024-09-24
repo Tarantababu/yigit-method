@@ -33,6 +33,13 @@ def check_answer():
         st.session_state.streak = 0
     st.session_state.attempts += 1
 
+def next_question():
+    st.session_state.question_index += 1
+    st.session_state.feedback = ""
+    st.session_state.show_next = False
+    st.session_state.attempts = 0
+    st.session_state.user_input = ""  # Clear the input field
+
 def main():
     st.set_page_config(layout="wide", page_title="Language Learning Game")
     
@@ -63,8 +70,7 @@ def main():
             st.session_state.score = 0
             st.session_state.streak = 0
             st.session_state.question_index = 0
-            if 'user_input' in st.session_state:
-                del st.session_state.user_input
+            st.session_state.user_input = ""
             st.experimental_rerun()
 
     current_lesson = lessons[lesson_id]
@@ -106,13 +112,7 @@ def main():
 
         with col2:
             if st.session_state.show_next:
-                if st.button("Next Question ➡️"):
-                    st.session_state.question_index += 1
-                    st.session_state.feedback = ""
-                    st.session_state.show_next = False
-                    st.session_state.attempts = 0
-                    if 'user_input' in st.session_state:
-                        del st.session_state.user_input
+                if st.button("Next Question ➡️", on_click=next_question):
                     st.experimental_rerun()
     else:
         st.balloons()
@@ -124,8 +124,7 @@ def main():
             st.session_state.feedback = ""
             st.session_state.show_next = False
             st.session_state.attempts = 0
-            if 'user_input' in st.session_state:
-                del st.session_state.user_input
+            st.session_state.user_input = ""
             st.experimental_rerun()
 
     # Fun facts or tips
