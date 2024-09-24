@@ -23,13 +23,10 @@ def check_answer():
     user_answer = st.session_state.get('user_input', '')
     correct_answer = st.session_state.correct_answer
     if clean_text(user_answer) == clean_text(correct_answer):
-        if not st.session_state.answer_correct:
-            st.session_state.feedback = "🎉 Correct! Press Enter again to continue."
-            st.session_state.score += 10
-            st.session_state.streak += 1
-            st.session_state.answer_correct = True
-        else:
-            st.session_state.next_question = True
+        st.session_state.feedback = "🎉 Correct! Press Shift+Enter to continue."
+        st.session_state.score += 10
+        st.session_state.streak += 1
+        st.session_state.answer_correct = True
     else:
         st.session_state.feedback = f"Not quite. Try again! Hint: {get_next_word(correct_answer, user_answer)}"
         st.session_state.streak = 0
@@ -42,10 +39,27 @@ def next_question():
     st.session_state.attempts = 0
     st.session_state.user_input = ""  # Clear the input field
     st.session_state.answer_correct = False
-    st.session_state.next_question = False
 
 def main():
     st.set_page_config(layout="wide", page_title="Language Learning Game")
+    
+    # JavaScript to handle Shift+Enter
+    st.components.v1.html(
+        """
+        <script>
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.shiftKey) {
+                const nextButton = document.querySelector('button[kind="secondaryFormSubmit"]');
+                if (nextButton) {
+                    nextButton.click();
+                }
+                e.preventDefault();
+            }
+        });
+        </script>
+        """,
+        height=0
+    )
     
     if "username" not in st.session_state:
         st.session_state.username = ""
@@ -76,7 +90,6 @@ def main():
             st.session_state.question_index = 0
             st.session_state.user_input = ""
             st.session_state.answer_correct = False
-            st.session_state.next_question = False
             st.experimental_rerun()
 
     current_lesson = lessons[lesson_id]
@@ -90,8 +103,6 @@ def main():
         st.session_state.attempts = 0
     if "answer_correct" not in st.session_state:
         st.session_state.answer_correct = False
-    if "next_question" not in st.session_state:
-        st.session_state.next_question = False
 
     # Main game area
     st.title("Language Learning Game")
@@ -116,9 +127,13 @@ def main():
             else:
                 st.warning(st.session_state.feedback)
         
-        if st.session_state.next_question:
-            next_question()
-            st.experimental_rerun()
+        # Hidden button to be triggered by Shift+Enter
+        if st.button("Next Question", key="next_question", style="display:none;"):
+            if st.session_state.answer_correct:
+                next_question()
+                st.experimental_rerun()
+            else:
+                st.warning("Please provide the correct answer before moving to the next question.")
 
     else:
         st.balloons()
@@ -131,7 +146,6 @@ def main():
             st.session_state.attempts = 0
             st.session_state.user_input = ""
             st.session_state.answer_correct = False
-            st.session_state.next_question = False
             st.experimental_rerun()
 
     # Fun facts or tips
