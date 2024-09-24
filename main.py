@@ -49,7 +49,7 @@ def main():
         <script>
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && e.shiftKey) {
-                const nextButton = document.querySelector('button[kind="secondaryFormSubmit"]');
+                const nextButton = document.querySelector('button[data-testid="baseButton-secondary"]');
                 if (nextButton) {
                     nextButton.click();
                 }
@@ -128,12 +128,14 @@ def main():
                 st.warning(st.session_state.feedback)
         
         # Hidden button to be triggered by Shift+Enter
-        if st.button("Next Question", key="next_question", style="display:none;"):
-            if st.session_state.answer_correct:
-                next_question()
-                st.experimental_rerun()
-            else:
-                st.warning("Please provide the correct answer before moving to the next question.")
+        _, col, _ = st.columns([10, 1, 10])
+        with col:
+            if st.button("Next", key="next_question", use_container_width=True):
+                if st.session_state.answer_correct:
+                    next_question()
+                    st.experimental_rerun()
+                else:
+                    st.warning("Please provide the correct answer before moving to the next question.")
 
     else:
         st.balloons()
