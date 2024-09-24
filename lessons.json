@@ -1,43 +1,132 @@
 {
-  "lesson1": {
-    "title": "Grundlegende Begrüßungen",
-    "description": "Lerne gängige Begrüßungen in der Zielsprache.",
+  "Lesson 1": {
+    "title": "Das Wetter",
+    "description": "Lerne, wie du über das Wetter auf Deutsch sprichst, indem du auf vorherigen Sätzen aufbaust.",
     "questions": [
       {
-        "prompt": "Wie sagt man 'Hallo' in der Zielsprache?",
-        "answer": "Hallo",
-        "explanation": "'Hallo' ist die Standardbegrüßung auf Deutsch, äquivalent zu 'Hello' im Englischen."
+        "prompt": "How do you say 'It is sunny' in German?",
+        "answer": "Es ist sonnig.",
+        "explanation": "'Es ist sonnig' beschreibt, dass die Sonne scheint und der Himmel klar ist."
       },
       {
-        "prompt": "Übersetze 'Guten Morgen' in die Zielsprache.",
-        "answer": "Guten Morgen",
-        "explanation": "'Guten Morgen' wird morgens verwendet, um jemanden zu begrüßen und bedeutet wörtlich 'Good morning' auf Englisch."
+        "prompt": "What do you say when it is sunny and you want to enjoy it outside?",
+        "answer": "Es ist sonnig. Ich bin draußen.",
+        "explanation": "Hier beschreibst du, dass du draußen bist, weil das Wetter schön ist."
       },
       {
-        "prompt": "Wie würde man 'Auf Wiedersehen' in der Zielsprache sagen?",
-        "answer": "Auf Wiedersehen",
-        "explanation": "'Auf Wiedersehen' ist die gebräuchlichste Art, sich auf Deutsch zu verabschieden, obwohl es auch Variationen wie 'Tschüss' gibt."
-      }
-    ]
-  },
-  "lesson2": {
-    "title": "Grundlegende Sätze",
-    "description": "Lerne wichtige Sätze für die grundlegende Kommunikation.",
-    "questions": [
-      {
-        "prompt": "Wie sagt man 'Bitte' in der Zielsprache?",
-        "answer": "Bitte",
-        "explanation": "'Bitte' wird auf Deutsch verwendet, um höflich um etwas zu bitten."
+        "prompt": "What can you add when you enjoy being outside on a sunny day?",
+        "answer": "Es ist sonnig. Ich bin draußen. Ich genieße die frische Luft.",
+        "explanation": "Hier erklärst du, dass du die frische Luft an einem sonnigen Tag genießt."
       },
       {
-        "prompt": "Übersetze 'Danke' in die Zielsprache.",
-        "answer": "Danke",
-        "explanation": "'Danke' ist die Standardform, um 'thank you' auf Deutsch zu sagen."
+        "prompt": "What do you say when it starts raining?",
+        "answer": "Es regnet.",
+        "explanation": "'Es regnet' bedeutet, dass Wasser von den Wolken fällt und es oft ungemütlich wird."
       },
       {
-        "prompt": "Wie würde man fragen 'Wie geht es dir?' in der Zielsprache?",
-        "answer": "Wie geht es dir?",
-        "explanation": "'Wie geht es dir?' ist eine gängige Möglichkeit, um 'How are you?' auf Deutsch zu fragen."
+        "prompt": "How do you say you need an umbrella when it is raining?",
+        "answer": "Es regnet. Ich muss meinen Regenschirm mitnehmen.",
+        "explanation": "Hier erklärst du, dass du einen Regenschirm brauchst, um trocken zu bleiben."
+      },
+      {
+        "prompt": "What can you say to explain why you are staying inside?",
+        "answer": "Es regnet. Ich muss meinen Regenschirm mitnehmen. Deshalb bleibe ich drinnen.",
+        "explanation": "Hier verwendest du 'deshalb', um den Grund für dein Drinnenbleiben zu erläutern."
+      },
+      {
+        "prompt": "How do you ask 'What is the weather like today?' in German?",
+        "answer": "Wie ist das Wetter heute?",
+        "explanation": "'Wie ist das Wetter heute?' ist eine häufige Frage, um die aktuellen Wetterbedingungen zu erfragen."
+      },
+      {
+        "prompt": "How do you respond if the weather is cold?",
+        "answer": "Wie ist das Wetter heute? Es ist kalt.",
+        "explanation": "Du gibst die Temperatur an, wenn du nach dem Wetter gefragt wirst."
+      },
+      {
+        "prompt": "How can you express that you are wearing warm clothes because it is cold?",
+        "answer": "Es ist kalt. Ich trage einen dicken Mantel.",
+        "explanation": "Hier erläuterst du, was du trägst, um dich warm zu halten."
+      },
+      {
+        "prompt": "How would you say it is also windy?",
+        "answer": "Es ist kalt. Ich trage einen dicken Mantel. Außerdem ist es windig.",
+        "explanation": "Du fügst eine neue Information hinzu, indem du sagst, dass es windig ist."
+      },
+      {
+        "prompt": "How do you say 'It is foggy' in German?",
+        "answer": "Es ist neblig.",
+        "explanation": "'Es ist neblig' bedeutet, dass die Sicht durch den Nebel stark eingeschränkt ist."
+      },
+      {
+        "prompt": "How can you connect the cold, wind, and fog?",
+        "answer": "Es ist kalt, windig und neblig. Das macht es schwer, draußen zu gehen.",
+        "explanation": "Du kombinierst die Wetterbedingungen und erklärst die Auswirkungen auf deine Aktivitäten."
+      },
+      {
+        "prompt": "How do you say 'It is hot' in German?",
+        "answer": "Es ist heiß.",
+        "explanation": "'Es ist heiß' bedeutet, dass die Temperaturen unangenehm hoch sind."
+      },
+      {
+        "prompt": "How can you express your desire to go swimming on a hot day?",
+        "answer": "Es ist heiß. Ich möchte an den See gehen.",
+        "explanation": "Hier erklärst du, was du an einem heißen Tag tun möchtest."
+      },
+      {
+        "prompt": "How would you say you enjoy swimming in the lake?",
+        "answer": "Es ist heiß. Ich möchte an den See gehen. Ich schwimme gerne dort.",
+        "explanation": "Du beschreibst, dass das Schwimmen im See dir Freude bereitet."
+      },
+      {
+        "prompt": "What is the translation of 'It is snowing'?",
+        "answer": "Es schneit.",
+        "explanation": "'Es schneit' bedeutet, dass Schnee vom Himmel fällt."
+      },
+      {
+        "prompt": "How would you say that you enjoy skiing when it snows?",
+        "answer": "Es schneit. Ich liebe es, Ski zu fahren.",
+        "explanation": "Hier drückst du deine Vorliebe für das Skifahren im Schnee aus."
+      },
+      {
+        "prompt": "How do you ask 'Is it going to rain tomorrow?' in German?",
+        "answer": "Wird es morgen regnen?",
+        "explanation": "Diese Frage bezieht sich auf die Wettervorhersage für den nächsten Tag."
+      },
+      {
+        "prompt": "How do you respond if the forecast indicates rain?",
+        "answer": "Ja, die Vorhersage sagt, dass es morgen regnen wird.",
+        "explanation": "Du bestätigst die Vorhersage mit dem Futur, um die Aussage zu verdeutlichen."
+      },
+      {
+        "prompt": "What is the German translation of 'It is humid'?",
+        "answer": "Es ist feucht.",
+        "explanation": "'Es ist feucht' beschreibt, dass die Luft viel Wasser enthält."
+      },
+      {
+        "prompt": "How would you express that humid weather can be uncomfortable?",
+        "answer": "Es ist feucht. Das Wetter kann unangenehm sein.",
+        "explanation": "Hier erläuterst du die möglichen Auswirkungen von feuchtem Wetter."
+      },
+      {
+        "prompt": "How do you say 'It is clear' in German?",
+        "answer": "Es ist klar.",
+        "explanation": "'Es ist klar' bedeutet, dass der Himmel wolkenlos ist."
+      },
+      {
+        "prompt": "How can you say you enjoy going for a walk on a clear day?",
+        "answer": "Es ist klar. Ich gehe gerne spazieren.",
+        "explanation": "Hier drückst du deine Vorliebe für Spaziergänge an klaren Tagen aus."
+      },
+      {
+        "prompt": "How do you say 'The forecast is nice' in German?",
+        "answer": "Die Vorhersage ist schön.",
+        "explanation": "'Die Vorhersage ist schön' bedeutet, dass das Wetter angenehm sein wird."
+      },
+      {
+        "prompt": "How would you say you are looking forward to the nice weather?",
+        "answer": "Die Vorhersage ist schön. Ich freue mich auf die warmen Tage.",
+        "explanation": "Hier drückst du deine Vorfreude auf das kommende Wetter aus."
       }
     ]
   }
