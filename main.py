@@ -37,8 +37,8 @@ def next_question():
     st.session_state.question_index += 1
     st.session_state.feedback = ""
     st.session_state.attempts = 0
-    st.session_state.user_input = ""  # Clear the input field
     st.session_state.answer_correct = False
+    st.session_state.clear_input = True
 
 def main():
     st.set_page_config(layout="wide", page_title="Language Learning Game")
@@ -88,7 +88,7 @@ def main():
             st.session_state.score = 0
             st.session_state.streak = 0
             st.session_state.question_index = 0
-            st.session_state.user_input = ""
+            st.session_state.clear_input = True
             st.session_state.answer_correct = False
             st.experimental_rerun()
 
@@ -103,6 +103,8 @@ def main():
         st.session_state.attempts = 0
     if "answer_correct" not in st.session_state:
         st.session_state.answer_correct = False
+    if "clear_input" not in st.session_state:
+        st.session_state.clear_input = False
 
     # Main game area
     st.title("Language Learning Game")
@@ -118,6 +120,11 @@ def main():
         st.header(question["prompt"])
         
         st.session_state.correct_answer = question["answer"]
+        
+        # Clear input if flag is set
+        if st.session_state.clear_input:
+            st.session_state.user_input = ""
+            st.session_state.clear_input = False
         
         user_input = st.text_input("Your answer:", key="user_input", on_change=check_answer)
         
@@ -144,7 +151,7 @@ def main():
             st.session_state.question_index = 0
             st.session_state.feedback = ""
             st.session_state.attempts = 0
-            st.session_state.user_input = ""
+            st.session_state.clear_input = True
             st.session_state.answer_correct = False
             st.experimental_rerun()
 
