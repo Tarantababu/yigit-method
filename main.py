@@ -18,25 +18,18 @@ def get_next_word(correct_answer, user_answer):
             return f"-> {word}"
     return "Your answer is correct, but incomplete. Try adding more words."
 
-# JavaScript to enable form submission on Enter key press
-js = """
-<script>
-document.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        const submitButton = document.querySelector('button[kind="primaryFormSubmit"]');
-        if (submitButton) {
-            submitButton.click();
-        }
-    }
-});
-</script>
-"""
+def check_answer():
+    user_answer = st.session_state.user_input
+    correct_answer = st.session_state.correct_answer
+    if clean_text(user_answer) == clean_text(correct_answer):
+        st.session_state.feedback = "Correct! Well done."
+        st.session_state.show_next = True
+    else:
+        st.session_state.feedback = get_next_word(correct_answer, user_answer)
+        st.session_state.show_next = False
 
 def main():
     st.set_page_config(layout="wide")
-    
-    # Inject custom JavaScript
-    st.markdown(js, unsafe_allow_html=True)
     
     # User authentication (simplified for this example)
     if "username" not in st.session_state:
@@ -65,10 +58,10 @@ def main():
     # Initialize session state
     if "question_index" not in st.session_state:
         st.session_state.question_index = 0
-    if "user_answer" not in st.session_state:
-        st.session_state.user_answer = ""
     if "show_next" not in st.session_state:
         st.session_state.show_next = False
+    if "feedback" not in st.session_state:
+        st.session_state.feedback = ""
 
     # Get current question
     if st.session_state.question_index < len(current_lesson["questions"]):
@@ -76,25 +69,17 @@ def main():
         
         st.write(question["prompt"])
         
-        correct_answer = question["answer"]
+        st.session_state.correct_answer = question["answer"]
         
-        with st.form(key='answer_form'):
-            user_answer = st.text_input("Your answer:", key="user_input", value=st.session_state.user_answer)
-            submit_button = st.form_submit_button(label='Submit')
-
-        if submit_button:
-            st.session_state.user_answer = user_answer
-            if clean_text(user_answer) == clean_text(correct_answer):
-                st.success("Correct! Well done.")
-                st.session_state.show_next = True
-            else:
-                st.write(get_next_word(correct_answer, user_answer))
-                st.session_state.show_next = False
+        st.text_input("Your answer:", key="user_input", on_change=check_answer)
+        
+        if st.session_state.feedback:
+            st.write(st.session_state.feedback)
 
         if st.session_state.show_next:
             if st.button("Next Question"):
                 st.session_state.question_index += 1
-                st.session_state.user_answer = ""
+                st.session_state.feedback = ""
                 st.session_state.show_next = False
                 st.experimental_rerun()
     else:
@@ -103,7 +88,7 @@ def main():
             save_progress(st.session_state.username, lesson_id, True)
             st.success(f"Lesson completed: {current_lesson['title']}")
             st.session_state.question_index = 0
-            st.session_state.user_answer = ""
+            st.session_state.feedback = ""
             st.session_state.show_next = False
 
 if __name__ == "__main__":
