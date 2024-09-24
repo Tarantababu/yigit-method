@@ -1,14 +1,18 @@
 import streamlit as st
 import json
 from datetime import datetime
+import re
 
 def save_progress(username, lesson_id, completed):
     with open(f"{username}_progress.json", "w") as f:
         json.dump({"lesson_id": lesson_id, "completed": completed, "timestamp": str(datetime.now())}, f)
 
+def clean_text(text):
+    return re.sub(r'[,.]', '', text.lower().strip())
+
 def get_next_word(correct_answer, user_answer):
-    correct_words = correct_answer.lower().split()
-    user_words = user_answer.lower().split()
+    correct_words = clean_text(correct_answer).split()
+    user_words = clean_text(user_answer).split()
     for i, word in enumerate(correct_words):
         if i >= len(user_words) or user_words[i] != word:
             return f"-> {word}"
@@ -31,7 +35,7 @@ def main():
     # Display username in top-right corner
     st.markdown(f'<div style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: white; padding: 5px; border-radius: 5px;">{st.session_state.username}</div>', unsafe_allow_html=True)
 
-    st.title("Language Learning App")
+    st.title("yigit's method")
 
     # Load lessons data
     with open("lessons.json", "r") as f:
@@ -61,7 +65,7 @@ def main():
         
         if st.button("Submit"):
             st.session_state.user_answer = user_answer
-            if user_answer.lower().strip() == correct_answer.lower().strip():
+            if clean_text(user_answer) == clean_text(correct_answer):
                 st.success("Correct! Well done.")
                 st.session_state.show_next = True
             else:
