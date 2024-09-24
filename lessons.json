@@ -1,0 +1,44 @@
+{
+  "lesson1": {
+    "title": "Basic Greetings",
+    "description": "Learn common greetings in the target language.",
+    "questions": [
+      {
+        "prompt": "How do you say 'Hello' in the target language?",
+        "answer": "Hola",
+        "explanation": "'Hola' is the standard greeting in Spanish, equivalent to 'Hello' in English."
+      },
+      {
+        "prompt": "Translate 'Good morning' to the target language.",
+        "answer": "Buenos días",
+        "explanation": "'Buenos días' literally means 'good days' and is used as a morning greeting in Spanish."
+      },
+      {
+        "prompt": "How would you say 'Goodbye' in the target language?",
+        "answer": "Adiós",
+        "explanation": "'Adiós' is the most common way to say goodbye in Spanish, although there are other variants like 'Hasta luego' (see you later)."
+      }
+    ]
+  },
+  "lesson2": {
+    "title": "Basic Phrases",
+    "description": "Learn essential phrases for basic communication.",
+    "questions": [
+      {
+        "prompt": "How do you say 'Please' in the target language?",
+        "answer": "Por favor",
+        "explanation": "'Por favor' is used to say 'please' in Spanish, showing politeness in requests."
+      },
+      {
+        "prompt": "Translate 'Thank you' to the target language.",
+        "answer": "Gracias",
+        "explanation": "'Gracias' is the standard way to say 'thank you' in Spanish."
+      },
+      {
+        "prompt": "How would you ask 'How are you?' in the target language?",
+        "answer": "¿Cómo estás?",
+        "explanation": "'¿Cómo estás?' is a common way to ask 'How are you?' in Spanish. Note the inverted question marks at the beginning of the sentence."
+      }
+    ]
+  }
+}
