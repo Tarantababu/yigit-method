@@ -6,12 +6,12 @@ def save_progress(username, lesson_id, completed):
     with open(f"{username}_progress.json", "w") as f:
         json.dump({"lesson_id": lesson_id, "completed": completed, "timestamp": str(datetime.now())}, f)
 
-def get_hint(correct_answer, user_answer):
+def get_next_word(correct_answer, user_answer):
     correct_words = correct_answer.lower().split()
     user_words = user_answer.lower().split()
     for i, word in enumerate(correct_words):
         if i >= len(user_words) or user_words[i] != word:
-            return f"Hint: The next word is '{word}'"
+            return f"-> {word}"
     return "Your answer is correct, but incomplete. Try adding more words."
 
 def main():
@@ -63,11 +63,9 @@ def main():
             st.session_state.user_answer = user_answer
             if user_answer.lower().strip() == correct_answer.lower().strip():
                 st.success("Correct! Well done.")
-                st.write("Explanation:", question["explanation"])
                 st.session_state.show_next = True
             else:
-                st.error("Not quite correct. Here's a hint:")
-                st.write(get_hint(correct_answer, user_answer))
+                st.write(get_next_word(correct_answer, user_answer))
                 st.session_state.show_next = False
 
         if st.session_state.show_next:
