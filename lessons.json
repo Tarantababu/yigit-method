@@ -88,4 +88,110 @@
       }
     ]
   }
+  {
+  "lesson5": {
+    "title": "Shopping in the Supermarket",
+    "questions": [
+      {
+        "prompt": "I am going to the supermarket.",
+        "answer": "Ich gehe in den Supermarkt."
+      },
+      {
+        "prompt": "I am going to the supermarket to buy groceries.",
+        "answer": "Ich gehe in den Supermarkt, um Lebensmittel zu kaufen."
+      },
+      {
+        "prompt": "I am looking for the bread section.",
+        "answer": "Ich suche die Brot-Abteilung."
+      },
+      {
+        "prompt": "Excuse me, where is the bread section?",
+        "answer": "Entschuldigung, wo ist die Brot-Abteilung?"
+      },
+      {
+        "prompt": "I would like two loaves of whole grain bread, please.",
+        "answer": "Ich hätte gerne zwei Laibe Vollkornbrot, bitte."
+      },
+      {
+        "prompt": "Do you have gluten-free bread?",
+        "answer": "Haben Sie glutenfreies Brot?"
+      },
+      {
+        "prompt": "Which types of bread do you have?",
+        "answer": "Welche Brotsorten haben Sie?"
+      },
+      {
+        "prompt": "I will take this bread, please.",
+        "answer": "Ich nehme dieses Brot, bitte."
+      },
+      {
+        "prompt": "I am going to the butcher's counter.",
+        "answer": "Ich gehe zur Fleischtheke."
+      },
+      {
+        "prompt": "I would like 200 grams of ham, please.",
+        "answer": "Ich hätte gerne 200 Gramm Schinken, bitte."
+      },
+      {
+        "prompt": "Could I have half a kilo of minced meat?",
+        "answer": "Könnte ich ein halbes Kilo Hackfleisch haben?"
+      },
+      {
+        "prompt": "I would like that one, please (while pointing).",
+        "answer": "Ich hätte gerne das dort, bitte."
+      },
+      {
+        "prompt": "How much does it cost?",
+        "answer": "Wie viel kostet das?"
+      },
+      {
+        "prompt": "Can I pay with card?",
+        "answer": "Kann ich mit Karte zahlen?"
+      },
+      {
+        "prompt": "Do you accept contactless payment?",
+        "answer": "Nehmen Sie kontaktlose Zahlung an?"
+      },
+      {
+        "prompt": "Do you need a bag?",
+        "answer": "Brauchen Sie eine Tüte?"
+      },
+      {
+        "prompt": "No, thank you, I brought my own bag.",
+        "answer": "Nein, danke, ich habe meine eigene Tüte mitgebracht."
+      },
+      {
+        "prompt": "Where can I find the dairy products?",
+        "answer": "Wo finde ich die Milchprodukte?"
+      },
+      {
+        "prompt": "Where can I find the fruits and vegetables?",
+        "answer": "Wo finde ich die Obst- und Gemüseabteilung?"
+      },
+      {
+        "prompt": "I would like to pay, please.",
+        "answer": "Ich möchte bezahlen, bitte."
+      },
+      {
+        "prompt": "I would like to pay in cash.",
+        "answer": "Ich möchte bar bezahlen."
+      },
+      {
+        "prompt": "Could you please give me a receipt?",
+        "answer": "Könnten Sie mir bitte einen Kassenbon geben?"
+      },
+      {
+        "prompt": "Thank you! Have a nice day.",
+        "answer": "Danke! Einen schönen Tag noch."
+      },
+      {
+        "prompt": "Can you please help me find the pasta?",
+        "answer": "Können Sie mir bitte helfen, die Nudeln zu finden?"
+      },
+      {
+        "prompt": "I will take two of these, please.",
+        "answer": "Ich nehme zwei davon, bitte."
+      }
+    ]
+  }
 }
