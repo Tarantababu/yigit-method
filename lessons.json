@@ -690,5 +690,98 @@
         "answer": "Bis später! Passen Sie auf sich auf!"
       }
     ]
+  },
+  "Weather": {
+    "title": "Talking About the Weather",
+    "questions": [
+      {
+        "prompt": "The weather is nice today.",
+        "answer": "Das Wetter ist heute schön."
+      },
+      {
+        "prompt": "The weather is nice today. It’s sunny and warm.",
+        "answer": "Das Wetter ist heute schön. Es ist sonnig und warm."
+      },
+      {
+        "prompt": "It’s sunny and warm. I love days like this.",
+        "answer": "Es ist sonnig und warm. Ich liebe Tage wie diesen."
+      },
+      {
+        "prompt": "I love days like this. Do you enjoy the summer?",
+        "answer": "Ich liebe Tage wie diesen. Genießen Sie den Sommer?"
+      },
+      {
+        "prompt": "Do you enjoy the summer? I really do.",
+        "answer": "Genießen Sie den Sommer? Das tue ich wirklich."
+      },
+      {
+        "prompt": "I really do. The parks are lovely in summer.",
+        "answer": "Das tue ich wirklich. Die Parks sind im Sommer schön."
+      },
+      {
+        "prompt": "The parks are lovely in summer. We often have picnics.",
+        "answer": "Die Parks sind im Sommer schön. Wir haben oft Picknicks."
+      },
+      {
+        "prompt": "We often have picnics. What do you like to do in summer?",
+        "answer": "Wir haben oft Picknicks. Was machen Sie gerne im Sommer?"
+      },
+      {
+        "prompt": "What do you like to do in summer? I enjoy swimming.",
+        "answer": "Was machen Sie gerne im Sommer? Ich schwimme gerne."
+      },
+      {
+        "prompt": "I enjoy swimming. But winter is also interesting.",
+        "answer": "Ich schwimme gerne. Aber der Winter ist auch interessant."
+      },
+      {
+        "prompt": "But winter is also interesting. It can be very cold.",
+        "answer": "Aber der Winter ist auch interessant. Es kann sehr kalt werden."
+      },
+      {
+        "prompt": "It can be very cold. Sometimes, there is snow.",
+        "answer": "Es kann sehr kalt werden. Manchmal gibt es Schnee."
+      },
+      {
+        "prompt": "Sometimes, there is snow. We can go sledding.",
+        "answer": "Manchmal gibt es Schnee. Wir können Schlitten fahren."
+      },
+      {
+        "prompt": "We can go sledding. Do you like winter sports?",
+        "answer": "Wir können Schlitten fahren. Mögen Sie Wintersport?"
+      },
+      {
+        "prompt": "Do you like winter sports? I prefer summer activities.",
+        "answer": "Mögen Sie Wintersport? Ich bevorzuge Sommeraktivitäten."
+      },
+      {
+        "prompt": "I prefer summer activities, but I also like skiing.",
+        "answer": "Ich bevorzuge Sommeraktivitäten, aber ich mag auch Skifahren."
+      },
+      {
+        "prompt": "I like skiing. However, rainy days can be boring.",
+        "answer": "Ich mag Skifahren. Regenreiche Tage können jedoch langweilig sein."
+      },
+      {
+        "prompt": "However, rainy days can be boring. What do you do when it rains?",
+        "answer": "Regenreiche Tage können jedoch langweilig sein. Was machen Sie, wenn es regnet?"
+      },
+      {
+        "prompt": "What do you do when it rains? I like to read books.",
+        "answer": "Was machen Sie, wenn es regnet? Ich lese gerne Bücher."
+      },
+      {
+        "prompt": "I like to read books. It’s cozy at home during rainy weather.",
+        "answer": "Ich lese gerne Bücher. Es ist gemütlich zu Hause bei regnerischem Wetter."
+      },
+      {
+        "prompt": "It’s cozy at home during rainy weather. I enjoy a warm drink.",
+        "answer": "Es ist gemütlich zu Hause bei regnerischem Wetter. Ich genieße ein warmes Getränk."
+      },
+      {
+        "prompt": "I enjoy a warm drink. What’s your favorite drink?",
+        "answer": "Ich genieße ein warmes Getränk. Was ist Ihr Lieblingsgetränk?"
+      }
+    ]
   }
 }
