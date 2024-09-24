@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 import re
 import random
+import time
 
 def save_progress(username, lesson_id, score):
     with open(f"{username}_progress.json", "w") as f:
@@ -24,41 +25,23 @@ def check_answer():
     correct_answer = st.session_state.correct_answer
     if clean_text(user_answer) == clean_text(correct_answer):
         st.session_state.feedback = "🎉 Correct! Well done."
-        st.session_state.show_next = True
         st.session_state.score += 10
         st.session_state.streak += 1
+        st.session_state.timer_start = time.time()
     else:
         st.session_state.feedback = f"Not quite. Try again! Hint: {get_next_word(correct_answer, user_answer)}"
-        st.session_state.show_next = False
         st.session_state.streak = 0
     st.session_state.attempts += 1
 
 def next_question():
     st.session_state.question_index += 1
     st.session_state.feedback = ""
-    st.session_state.show_next = False
     st.session_state.attempts = 0
     st.session_state.user_input = ""  # Clear the input field
+    st.session_state.timer_start = None
 
 def main():
     st.set_page_config(layout="wide", page_title="Language Learning Game")
-    
-    # JavaScript to focus on input field
-    st.components.v1.html(
-        """
-        <script>
-        function focusInput() {
-            setTimeout(function() {
-                const input = document.querySelector('input[aria-label="Your answer:"]');
-                if (input) {
-                    input.focus();
-                }
-            }, 100);
-        }
-        </script>
-        """,
-        height=0,
-    )
     
     if "username" not in st.session_state:
         st.session_state.username = ""
@@ -88,6 +71,7 @@ def main():
             st.session_state.streak = 0
             st.session_state.question_index = 0
             st.session_state.user_input = ""
+            st.session_state.timer_start = None
             st.experimental_rerun()
 
     current_lesson = lessons[lesson_id]
@@ -95,12 +79,12 @@ def main():
     # Initialize session state
     if "question_index" not in st.session_state:
         st.session_state.question_index = 0
-    if "show_next" not in st.session_state:
-        st.session_state.show_next = False
     if "feedback" not in st.session_state:
         st.session_state.feedback = ""
     if "attempts" not in st.session_state:
         st.session_state.attempts = 0
+    if "timer_start" not in st.session_state:
+        st.session_state.timer_start = None
 
     # Main game area
     st.title("Language Learning Game")
@@ -119,18 +103,25 @@ def main():
         
         user_input = st.text_input("Your answer:", key="user_input", on_change=check_answer)
         
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.session_state.feedback:
-                if "Correct" in st.session_state.feedback:
-                    st.success(st.session_state.feedback)
-                else:
-                    st.warning(st.session_state.feedback)
-
-        with col2:
-            if st.session_state.show_next:
-                if st.button("Next Question ➡️", on_click=next_question):
-                    st.components.v1.html("<script>focusInput();</script>", height=0)
+        if st.session_state.feedback:
+            if "Correct" in st.session_state.feedback:
+                st.success(st.session_state.feedback)
+                if st.session_state.timer_start is None:
+                    st.session_state.timer_start = time.time()
+            else:
+                st.warning(st.session_state.feedback)
+        
+        # Timer logic
+        if st.session_state.timer_start is not None:
+            elapsed_time = time.time() - st.session_state.timer_start
+            remaining_time = max(3 - elapsed_time, 0)
+            
+            if remaining_time > 0:
+                st.write(f"Next question in {remaining_time:.1f} seconds...")
+                st.button("Next Question", on_click=next_question)
+            else:
+                next_question()
+                st.experimental_rerun()
     else:
         st.balloons()
         st.success("🎉 Congratulations! You've completed all questions in this lesson.")
@@ -139,9 +130,9 @@ def main():
             save_progress(st.session_state.username, lesson_id, st.session_state.score)
             st.session_state.question_index = 0
             st.session_state.feedback = ""
-            st.session_state.show_next = False
             st.session_state.attempts = 0
             st.session_state.user_input = ""
+            st.session_state.timer_start = None
             st.experimental_rerun()
 
     # Fun facts or tips
