@@ -1,22 +1,9 @@
 import streamlit as st
-import spacy
 import json
 from datetime import datetime
 
-# Load spaCy model
-nlp = spacy.load("en_core_web_sm")
-
-# Load lessons data
-with open("lessons.json", "r") as f:
-    lessons = json.load(f)
-
 def check_answer(user_input, correct_answer):
-    user_doc = nlp(user_input.lower())
-    correct_doc = nlp(correct_answer.lower())
-    
-    if user_doc.similarity(correct_doc) > 0.8:
-        return True
-    return False
+    return user_input.lower().strip() == correct_answer.lower().strip()
 
 def save_progress(username, lesson_id, completed):
     # In a real app, you'd save this to a database
@@ -25,6 +12,10 @@ def save_progress(username, lesson_id, completed):
 
 def main():
     st.title("Language Learning App")
+
+    # Load lessons data
+    with open("lessons.json", "r") as f:
+        lessons = json.load(f)
 
     # User authentication (simplified for this example)
     username = st.text_input("Enter your username:")
