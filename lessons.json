@@ -544,5 +544,82 @@
         "answer": "Können wir getrennt oder zusammen bezahlen? Vielen Dank für Ihren Service."
       }
     ]
+  },
+  "Doctor's Appointment": {
+    "title": "Making a Doctor's Appointment",
+    "questions": [
+      {
+        "prompt": "Hello, I would like to make an appointment.",
+        "answer": "Hallo, ich möchte einen Termin vereinbaren."
+      },
+      {
+        "prompt": "I would like to make an appointment for a general inspection.",
+        "answer": "Ich möchte einen Termin für eine allgemeine Untersuchung vereinbaren."
+      },
+      {
+        "prompt": "I would like to make an appointment for a general inspection. When is the next available appointment?",
+        "answer": "Ich möchte einen Termin für eine allgemeine Untersuchung vereinbaren. Wann ist der nächste verfügbare Termin?"
+      },
+      {
+        "prompt": "When is the next available appointment? I would prefer a morning slot.",
+        "answer": "Wann ist der nächste verfügbare Termin? Ich hätte lieber einen Termin am Morgen."
+      },
+      {
+        "prompt": "I would prefer a morning slot. Can you tell me what times are available?",
+        "answer": "Ich hätte lieber einen Termin am Morgen. Können Sie mir sagen, welche Zeiten verfügbar sind?"
+      },
+      {
+        "prompt": "Can you tell me what times are available? I can come on Tuesday or Wednesday.",
+        "answer": "Können Sie mir sagen, welche Zeiten verfügbar sind? Ich kann am Dienstag oder Mittwoch kommen."
+      },
+      {
+        "prompt": "I can come on Tuesday or Wednesday. What time would work best for you?",
+        "answer": "Ich kann am Dienstag oder Mittwoch kommen. Welche Uhrzeit passt Ihnen am besten?"
+      },
+      {
+        "prompt": "What time would work best for you? I could do 10 AM.",
+        "answer": "Welche Uhrzeit passt Ihnen am besten? Ich könnte um 10 Uhr kommen."
+      },
+      {
+        "prompt": "I could do 10 AM. Could you please confirm my name and date of birth?",
+        "answer": "Ich könnte um 10 Uhr kommen. Könnten Sie bitte meinen Namen und mein Geburtsdatum bestätigen?"
+      },
+      {
+        "prompt": "Could you please confirm my name and date of birth? My name is Halinur and my date of birth is January 15, 1985.",
+        "answer": "Könnten Sie bitte meinen Namen und mein Geburtsdatum bestätigen? Mein Name ist Halinur und mein Geburtsdatum ist der 15. Januar 1985."
+      },
+      {
+        "prompt": "My name is Halinur and my date of birth is January 15, 1985. Also, could you take my insurance number?",
+        "answer": "Mein Name ist Halinur und mein Geburtsdatum ist der 15. Januar 1985. Könnten Sie auch meine Versicherungsnummer aufnehmen?"
+      },
+      {
+        "prompt": "Also, could you take my insurance number? My insurance number is 123456789.",
+        "answer": "Könnten Sie auch meine Versicherungsnummer aufnehmen? Meine Versicherungsnummer ist 123456789."
+      },
+      {
+        "prompt": "My insurance number is 123456789. I also need to make an appointment for my daughter.",
+        "answer": "Meine Versicherungsnummer ist 123456789. Ich muss auch einen Termin für meine Tochter vereinbaren."
+      },
+      {
+        "prompt": "I also need to make an appointment for my daughter. Her name is Mavi.",
+        "answer": "Ich muss auch einen Termin für meine Tochter vereinbaren. Ihr Name ist Mavi."
+      },
+      {
+        "prompt": "Her name is Mavi. She needs a check-up as well.",
+        "answer": "Ihr Name ist Mavi. Sie braucht auch eine Untersuchung."
+      },
+      {
+        "prompt": "She needs a check-up as well. Can we schedule her appointment on the same day?",
+        "answer": "Sie braucht auch eine Untersuchung. Können wir ihren Termin am selben Tag planen?"
+      },
+      {
+        "prompt": "Can we schedule her appointment on the same day? That would be very helpful.",
+        "answer": "Könnten wir ihren Termin am selben Tag planen? Das wäre sehr hilfreich."
+      },
+      {
+        "prompt": "That would be very helpful. Thank you for your assistance!",
+        "answer": "Das wäre sehr hilfreich. Vielen Dank für Ihre Hilfe!"
+      }
+    ]
   }
 }
