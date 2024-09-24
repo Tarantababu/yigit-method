@@ -39,23 +39,26 @@ def next_question():
     st.session_state.show_next = False
     st.session_state.attempts = 0
     st.session_state.user_input = ""  # Clear the input field
-    st.session_state.focus_input = True  # Set flag to focus input
 
 def main():
     st.set_page_config(layout="wide", page_title="Language Learning Game")
     
     # JavaScript to focus on input field
-    js = """
-    <script>
-    function focusInput() {
-        const input = document.querySelector('input[aria-label="Your answer:"]');
-        if (input) {
-            input.focus();
+    st.components.v1.html(
+        """
+        <script>
+        function focusInput() {
+            setTimeout(function() {
+                const input = document.querySelector('input[aria-label="Your answer:"]');
+                if (input) {
+                    input.focus();
+                }
+            }, 100);
         }
-    }
-    </script>
-    """
-    st.components.v1.html(js, height=0)
+        </script>
+        """,
+        height=0,
+    )
     
     if "username" not in st.session_state:
         st.session_state.username = ""
@@ -85,7 +88,6 @@ def main():
             st.session_state.streak = 0
             st.session_state.question_index = 0
             st.session_state.user_input = ""
-            st.session_state.focus_input = True
             st.experimental_rerun()
 
     current_lesson = lessons[lesson_id]
@@ -99,8 +101,6 @@ def main():
         st.session_state.feedback = ""
     if "attempts" not in st.session_state:
         st.session_state.attempts = 0
-    if "focus_input" not in st.session_state:
-        st.session_state.focus_input = False
 
     # Main game area
     st.title("Language Learning Game")
@@ -130,16 +130,7 @@ def main():
         with col2:
             if st.session_state.show_next:
                 if st.button("Next Question ➡️", on_click=next_question):
-                    st.experimental_rerun()
-        
-        # Focus on input field if flag is set
-        if st.session_state.focus_input:
-            st.components.v1.html("""
-            <script>
-            setTimeout(function() { focusInput(); }, 100);
-            </script>
-            """, height=0)
-            st.session_state.focus_input = False
+                    st.components.v1.html("<script>focusInput();</script>", height=0)
     else:
         st.balloons()
         st.success("🎉 Congratulations! You've completed all questions in this lesson.")
@@ -151,7 +142,6 @@ def main():
             st.session_state.show_next = False
             st.session_state.attempts = 0
             st.session_state.user_input = ""
-            st.session_state.focus_input = True
             st.experimental_rerun()
 
     # Fun facts or tips
