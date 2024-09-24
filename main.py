@@ -2,13 +2,16 @@ import streamlit as st
 import json
 from datetime import datetime
 
-def check_answer(user_input, correct_answer):
-    return user_input.lower().strip() == correct_answer.lower().strip()
-
 def save_progress(username, lesson_id, completed):
-    # In a real app, you'd save this to a database
     with open(f"{username}_progress.json", "w") as f:
         json.dump({"lesson_id": lesson_id, "completed": completed, "timestamp": str(datetime.now())}, f)
+
+def split_sentence(sentence):
+    words = sentence.split()
+    chunks = []
+    for i in range(len(words)):
+        chunks.append(" ".join(words[:i+1]))
+    return chunks
 
 def main():
     st.title("Language Learning App")
@@ -30,23 +33,54 @@ def main():
     st.header(current_lesson["title"])
     st.write(current_lesson["description"])
 
-    # Lesson content
-    for i, question in enumerate(current_lesson["questions"]):
-        st.subheader(f"Question {i+1}")
-        st.write(question["prompt"])
-        user_answer = st.text_input(f"Your answer for question {i+1}:", key=f"q{i}")
-        
-        if user_answer:
-            if check_answer(user_answer, question["answer"]):
-                st.success("Correct! Well done!")
-            else:
-                st.error(f"Not quite. The correct answer is: {question['answer']}")
-                st.write("Explanation:", question["explanation"])
+    # Initialize session state for question index if not exists
+    if "question_index" not in st.session_state:
+        st.session_state.question_index = 0
 
-    # Complete lesson button
-    if st.button("Complete Lesson"):
-        save_progress(username, lesson_id, True)
-        st.success(f"Congratulations! You've completed the lesson: {current_lesson['title']}")
+    # Get current question
+    if st.session_state.question_index < len(current_lesson["questions"]):
+        question = current_lesson["questions"][st.session_state.question_index]
+        
+        st.write(question["prompt"])
+        
+        correct_answer = question["answer"]
+        chunks = split_sentence(correct_answer)
+        
+        # Initialize session state for this question's progress if not exists
+        if "current_progress" not in st.session_state:
+            st.session_state.current_progress = 0
+        
+        if st.session_state.current_progress < len(chunks):
+            user_answer = st.text_input("Complete the sentence:", value=chunks[st.session_state.current_progress], key="user_input")
+            
+            if user_answer:
+                if user_answer.lower().strip() == correct_answer[:len(chunks[st.session_state.current_progress])].lower().strip():
+                    st.session_state.current_progress += 1
+                    if st.session_state.current_progress < len(chunks):
+                        st.success("Correct! Continue with the next part.")
+                    else:
+                        st.success("Correct! You've completed this sentence.")
+                        st.write("Explanation:", question["explanation"])
+                        if st.button("Next Question"):
+                            st.session_state.question_index += 1
+                            st.session_state.current_progress = 0
+                            st.experimental_rerun()
+                else:
+                    st.error("Not quite. Try again.")
+        else:
+            st.success(f"Completed sentence: {correct_answer}")
+            st.write("Explanation:", question["explanation"])
+            if st.button("Next Question"):
+                st.session_state.question_index += 1
+                st.session_state.current_progress = 0
+                st.experimental_rerun()
+    else:
+        st.success("Congratulations! You've completed all questions in this lesson.")
+        if st.button("Complete Lesson"):
+            save_progress(username, lesson_id, True)
+            st.success(f"Lesson completed: {current_lesson['title']}")
+            st.session_state.question_index = 0
+            st.session_state.current_progress = 0
 
 if __name__ == "__main__":
     main()
