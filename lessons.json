@@ -356,7 +356,104 @@
       {
         "prompt": "Do you know how we can reach our destination if the train is canceled? Maybe we could take a bus or another train, but we need to check the schedule.",
         "answer": "Wissen Sie, wie wir unser Ziel erreichen können, wenn der Zug ausfällt? Vielleicht könnten wir einen Bus oder einen anderen Zug nehmen, aber wir müssen den Fahrplan überprüfen."
+      },
+      "Introducing Yourself": {
+    "title": "Introducing Yourself at the Job Center",
+    "questions": [
+      {
+        "prompt": "My name is Halinur.",
+        "answer": "Mein Name ist Halinur."
+      },
+      {
+        "prompt": "My name is Halinur. I have a B1 German certificate.",
+        "answer": "Mein Name ist Halinur. Ich habe ein B1-Zertifikat in Deutsch."
+      },
+      {
+        "prompt": "I have a B1 German certificate. I have at least 10 years of experience in the IT sector.",
+        "answer": "Ich habe ein B1-Zertifikat in Deutsch. Ich habe mindestens 10 Jahre Erfahrung im IT-Bereich."
+      },
+      {
+        "prompt": "I have at least 10 years of experience in the IT sector. I worked as a Product Manager.",
+        "answer": "Ich habe mindestens 10 Jahre Erfahrung im IT-Bereich. Ich habe als Product Manager gearbeitet."
+      },
+      {
+        "prompt": "I worked as a Product Manager. I also worked as a Product Owner.",
+        "answer": "Ich habe als Product Manager gearbeitet. Ich habe auch als Product Owner gearbeitet."
+      },
+      {
+        "prompt": "I also worked as a Product Owner. I have experience in CRM.",
+        "answer": "Ich habe auch als Product Owner gearbeitet. Ich habe Erfahrung im CRM."
+      },
+      {
+        "prompt": "I have experience in CRM. I have experience in e-commerce.",
+        "answer": "Ich habe Erfahrung im CRM. Ich habe Erfahrung im E-Commerce."
+      },
+      {
+        "prompt": "I have experience in e-commerce. I have experience in Data Management.",
+        "answer": "Ich habe Erfahrung im E-Commerce. Ich habe Erfahrung im Datenmanagement."
+      },
+      {
+        "prompt": "I have experience in Data Management. I hold a master's degree in Economics.",
+        "answer": "Ich habe Erfahrung im Datenmanagement. Ich habe einen Masterabschluss in Wirtschaftswissenschaften."
+      },
+      {
+        "prompt": "I hold a master's degree in Economics. My bachelor's degree is in Statistics.",
+        "answer": "Ich habe einen Masterabschluss in Wirtschaftswissenschaften. Mein Bachelorabschluss ist in Statistik."
+      },
+      {
+        "prompt": "My bachelor's degree is in Statistics. I can speak English.",
+        "answer": "Mein Bachelorabschluss ist in Statistik. Ich spreche Englisch."
+      },
+      {
+        "prompt": "I can speak English. I can speak German.",
+        "answer": "Ich spreche Englisch. Ich spreche Deutsch."
+      },
+      {
+        "prompt": "I can speak German. I can speak Turkish.",
+        "answer": "Ich spreche Deutsch. Ich spreche Türkisch."
+      },
+      {
+        "prompt": "I can speak Turkish. I'm married.",
+        "answer": "Ich spreche Türkisch. Ich bin verheiratet."
+      },
+      {
+        "prompt": "I'm married. I have a little daughter who is 6 years old.",
+        "answer": "Ich bin verheiratet. Ich habe eine kleine Tochter, die 6 Jahre alt ist."
+      },
+      {
+        "prompt": "I have a little daughter who is 6 years old. We have been living in Karlsruhe for 3 years.",
+        "answer": "Ich habe eine kleine Tochter, die 6 Jahre alt ist. Wir leben seit 3 Jahren in Karlsruhe."
+      },
+      {
+        "prompt": "We have been living in Karlsruhe for 3 years. My hobbies are doing yoga.",
+        "answer": "Wir leben seit 3 Jahren in Karlsruhe. Meine Hobbys sind Yoga machen."
+      },
+      {
+        "prompt": "My hobbies are doing yoga. I also enjoy watching TV series.",
+        "answer": "Meine Hobbys sind Yoga machen. Ich schaue auch gerne Serien."
+      },
+      {
+        "prompt": "I also enjoy watching TV series. I love cooking.",
+        "answer": "Ich schaue auch gerne Serien. Ich liebe es, zu kochen."
+      },
+      {
+        "prompt": "I love cooking. I want to continue B2 German classes.",
+        "answer": "Ich liebe es, zu kochen. Ich möchte gerne mit B2-Deutschunterricht weitermachen."
+      },
+      {
+        "prompt": "I want to continue B2 German classes to improve my skills.",
+        "answer": "Ich möchte gerne mit B2-Deutschunterricht weitermachen, um meine Fähigkeiten zu verbessern."
+      },
+      {
+        "prompt": "I hope to find a suitable job soon.",
+        "answer": "Ich hoffe, bald einen passenden Job zu finden."
+      },
+      {
+        "prompt": "I hope to find a suitable job soon. Thank you for your help.",
+        "answer": "Ich hoffe, bald einen passenden Job zu finden. Danke für Ihre Hilfe."
       }
+    ]
+  }
     ]
   }
 }
