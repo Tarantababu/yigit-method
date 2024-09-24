@@ -173,24 +173,24 @@
     "title": "Talking to My Daughter's Friends' Parents",
     "questions": [
       {
-        "prompt": "Hello, I am Mavi's mother/father.",
-        "answer": "Hallo, ich bin Mavis Mutter/Vater."
+        "prompt": "Hello, I am Mavi's mother.",
+        "answer": "Hallo, ich bin Mavis Mutter."
       },
       {
-        "prompt": "Hello, I am Mavi's mother/father. She goes to kindergarten here.",
-        "answer": "Hallo, ich bin Mavis Mutter/Vater. Sie geht hier in den Kindergarten."
+        "prompt": "Hello, I am Mavi's mother. She goes to kindergarten here.",
+        "answer": "Hallo, ich bin Mavis Mutter. Sie geht hier in den Kindergarten."
       },
       {
-        "prompt": "Hello, I am Mavi's mother/father. She goes to kindergarten here and really enjoys it.",
-        "answer": "Hallo, ich bin Mavis Mutter/Vater. Sie geht hier in den Kindergarten und es gefällt ihr sehr."
+        "prompt": "Hello, I am Mavi's mother. She goes to kindergarten here and really enjoys it.",
+        "answer": "Hallo, ich bin Mavis Mutter. Sie geht hier in den Kindergarten und es gefällt ihr sehr."
       },
       {
-        "prompt": "Hello, I am Mavi's mother/father. She really likes dancing.",
-        "answer": "Hallo, ich bin Mavis Mutter/Vater. Sie tanzt sehr gerne."
+        "prompt": "Hello, I am Mavi's mother. She really likes dancing.",
+        "answer": "Hallo, ich bin Mavis Mutter. Sie tanzt sehr gerne."
       },
       {
-        "prompt": "Hello, I am Mavi's mother/father. She likes dancing and listening to music.",
-        "answer": "Hallo, ich bin Mavis Mutter/Vater. Sie tanzt gerne und hört gerne Musik."
+        "prompt": "Hello, I am Mavi's mother. She likes dancing and listening to music.",
+        "answer": "Hallo, ich bin Mavis Mutter. Sie tanzt gerne und hört gerne Musik."
       },
       {
         "prompt": "We are originally from Turkey.",
@@ -206,19 +206,19 @@
       },
       {
         "prompt": "I work as a product manager.",
-        "answer": "Ich arbeite als Produktmanager/Produktmanagerin."
+        "answer": "Ich arbeite als Produktmanagerin."
       },
       {
-        "prompt": "I work as a product manager, and my spouse works in IT.",
-        "answer": "Ich arbeite als Produktmanager/Produktmanagerin, und mein/e Partner/in arbeitet in der IT."
+        "prompt": "I work as a product manager, and my husband works in IT.",
+        "answer": "Ich arbeite als Produktmanagerin, und mein Mann arbeitet in der IT."
       },
       {
         "prompt": "I work as a product manager. We are slowly getting used to life in Germany.",
-        "answer": "Ich arbeite als Produktmanager/Produktmanagerin. Wir gewöhnen uns langsam an das Leben in Deutschland."
+        "answer": "Ich arbeite als Produktmanagerin. Wir gewöhnen uns langsam an das Leben in Deutschland."
       },
       {
         "prompt": "I work as a product manager. We are slowly getting used to life in Germany, but it's very different from Turkey.",
-        "answer": "Ich arbeite als Produktmanager/Produktmanagerin. Wir gewöhnen uns langsam an das Leben in Deutschland, aber es ist sehr anders als in der Türkei."
+        "answer": "Ich arbeite als Produktmanagerin. Wir gewöhnen uns langsam an das Leben in Deutschland, aber es ist sehr anders als in der Türkei."
       },
       {
         "prompt": "We like living in Germany.",
