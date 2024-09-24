@@ -12,6 +12,17 @@ def save_progress(username, lesson_id, score):
 def clean_text(text):
     return re.sub(r'[,.]', '', text.lower().strip())
 
+def get_colored_answer(user_answer, correct_answer):
+    user_words = clean_text(user_answer).split()
+    correct_words = clean_text(correct_answer).split()
+    colored_words = []
+    for i, word in enumerate(user_words):
+        if i < len(correct_words) and word == correct_words[i]:
+            colored_words.append(f'<span style="color: darkgreen;">{word}</span>')
+        else:
+            colored_words.append(word)
+    return " ".join(colored_words)
+
 def get_next_word(correct_answer, user_answer):
     correct_words = clean_text(correct_answer).split()
     user_words = clean_text(user_answer).split()
@@ -29,10 +40,13 @@ def check_answer():
         st.session_state.streak += 1
         st.session_state.answer_correct = True
         st.session_state.move_to_next = True
+        st.session_state.colored_answer = None
     else:
-        st.session_state.feedback = f"Not quite. Try again! Hint: {get_next_word(correct_answer, user_answer)}"
+        next_word = get_next_word(correct_answer, user_answer)
+        st.session_state.feedback = f"Not quite. Try again! Hint: {next_word}"
         st.session_state.streak = 0
         st.session_state.answer_correct = False
+        st.session_state.colored_answer = get_colored_answer(user_answer, correct_answer)
     st.session_state.attempts += 1
 
 def next_question():
@@ -42,6 +56,7 @@ def next_question():
     st.session_state.answer_correct = False
     st.session_state.move_to_next = False
     st.session_state.reset_input = True
+    st.session_state.colored_answer = None
 
 def main():
     st.set_page_config(layout="wide", page_title="Language Learning Game")
@@ -76,6 +91,7 @@ def main():
             st.session_state.answer_correct = False
             st.session_state.move_to_next = False
             st.session_state.reset_input = True
+            st.session_state.colored_answer = None
             st.experimental_rerun()
 
     current_lesson = lessons[lesson_id]
@@ -93,6 +109,8 @@ def main():
         st.session_state.move_to_next = False
     if "reset_input" not in st.session_state:
         st.session_state.reset_input = False
+    if "colored_answer" not in st.session_state:
+        st.session_state.colored_answer = None
 
     # Main game area
     st.title("Language Learning Game")
@@ -124,6 +142,8 @@ def main():
                 st.experimental_rerun()
             else:
                 st.warning(st.session_state.feedback)
+                if st.session_state.colored_answer:
+                    st.markdown(f"Your answer so far: {st.session_state.colored_answer}", unsafe_allow_html=True)
         
         if st.session_state.move_to_next:
             next_question()
@@ -141,6 +161,7 @@ def main():
             st.session_state.answer_correct = False
             st.session_state.move_to_next = False
             st.session_state.reset_input = True
+            st.session_state.colored_answer = None
             st.experimental_rerun()
 
     # Fun facts or tips
