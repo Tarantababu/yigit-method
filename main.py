@@ -15,24 +15,31 @@ def get_hint(correct_answer, user_answer):
     return "Your answer is correct, but incomplete. Try adding more words."
 
 def main():
+    st.set_page_config(layout="wide")
+    
+    # User authentication (simplified for this example)
+    if "username" not in st.session_state:
+        st.session_state.username = ""
+    
+    if not st.session_state.username:
+        username = st.text_input("Enter your username:")
+        if username:
+            st.session_state.username = username
+            st.experimental_rerun()
+        return
+
+    # Display username in top-right corner
+    st.markdown(f'<div style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: white; padding: 5px; border-radius: 5px;">{st.session_state.username}</div>', unsafe_allow_html=True)
+
     st.title("Language Learning App")
 
     # Load lessons data
     with open("lessons.json", "r") as f:
         lessons = json.load(f)
 
-    # User authentication (simplified for this example)
-    username = st.text_input("Enter your username:")
-    if not username:
-        st.warning("Please enter a username to begin.")
-        return
-
     # Lesson selection
     lesson_id = st.selectbox("Select a lesson:", list(lessons.keys()))
     current_lesson = lessons[lesson_id]
-
-    st.header(current_lesson["title"])
-    st.write(current_lesson["description"])
 
     # Initialize session state
     if "question_index" not in st.session_state:
@@ -72,7 +79,7 @@ def main():
     else:
         st.success("Congratulations! You've completed all questions in this lesson.")
         if st.button("Complete Lesson"):
-            save_progress(username, lesson_id, True)
+            save_progress(st.session_state.username, lesson_id, True)
             st.success(f"Lesson completed: {current_lesson['title']}")
             st.session_state.question_index = 0
             st.session_state.user_answer = ""
