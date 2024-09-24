@@ -18,8 +18,25 @@ def get_next_word(correct_answer, user_answer):
             return f"-> {word}"
     return "Your answer is correct, but incomplete. Try adding more words."
 
+# JavaScript to enable form submission on Enter key press
+js = """
+<script>
+document.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        const submitButton = document.querySelector('button[kind="primaryFormSubmit"]');
+        if (submitButton) {
+            submitButton.click();
+        }
+    }
+});
+</script>
+"""
+
 def main():
     st.set_page_config(layout="wide")
+    
+    # Inject custom JavaScript
+    st.markdown(js, unsafe_allow_html=True)
     
     # User authentication (simplified for this example)
     if "username" not in st.session_state:
@@ -61,7 +78,6 @@ def main():
         
         correct_answer = question["answer"]
         
-        # Use a form to enable submission on Enter key press
         with st.form(key='answer_form'):
             user_answer = st.text_input("Your answer:", key="user_input", value=st.session_state.user_answer)
             submit_button = st.form_submit_button(label='Submit')
