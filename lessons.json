@@ -104,4 +104,93 @@
       }
     ]
   }
+  "lesson4": {
+    "title": "My Daughter's Kindergarten",
+    "questions": [
+      {
+        "prompt": "My daughter goes to kindergarten.",
+        "answer": "Meine Tochter geht in den Kindergarten."
+      },
+      {
+        "prompt": "My daughter goes to kindergarten. She likes it there.",
+        "answer": "Meine Tochter geht in den Kindergarten. Sie mag es dort."
+      },
+      {
+        "prompt": "My daughter goes to kindergarten. She likes it there because she has many friends.",
+        "answer": "Meine Tochter geht in den Kindergarten. Sie mag es dort, weil sie viele Freunde hat."
+      },
+      {
+        "prompt": "The teachers are very nice.",
+        "answer": "Die Lehrer sind sehr nett."
+      },
+      {
+        "prompt": "The teachers are very nice and patient with the kids.",
+        "answer": "Die Lehrer sind sehr nett und geduldig mit den Kindern."
+      },
+      {
+        "prompt": "The teachers teach the children new things every day.",
+        "answer": "Die Lehrer bringen den Kindern jeden Tag neue Dinge bei."
+      },
+      {
+        "prompt": "The teachers teach the children new things every day, like numbers and letters.",
+        "answer": "Die Lehrer bringen den Kindern jeden Tag neue Dinge bei, wie Zahlen und Buchstaben."
+      },
+      {
+        "prompt": "My daughter is learning a lot in kindergarten.",
+        "answer": "Meine Tochter lernt viel im Kindergarten."
+      },
+      {
+        "prompt": "My daughter is learning a lot in kindergarten and she loves learning new things.",
+        "answer": "Meine Tochter lernt viel im Kindergarten und sie liebt es, neue Dinge zu lernen."
+      },
+      {
+        "prompt": "Sometimes she feels shy.",
+        "answer": "Manchmal ist sie schüchtern."
+      },
+      {
+        "prompt": "Sometimes she feels shy, but the teachers help her feel comfortable.",
+        "answer": "Manchmal ist sie schüchtern, aber die Lehrer helfen ihr, sich wohlzufühlen."
+      },
+      {
+        "prompt": "She is very excited about her friends' birthdays.",
+        "answer": "Sie freut sich sehr über die Geburtstage ihrer Freunde."
+      },
+      {
+        "prompt": "She is very excited about her friends' birthdays because they always celebrate with cake.",
+        "answer": "Sie freut sich sehr über die Geburtstage ihrer Freunde, weil sie immer mit Kuchen feiern."
+      },
+      {
+        "prompt": "At the kindergarten, they always celebrate birthdays.",
+        "answer": "Im Kindergarten feiern sie immer Geburtstage."
+      },
+      {
+        "prompt": "At the kindergarten, they always celebrate birthdays with cake and games.",
+        "answer": "Im Kindergarten feiern sie immer Geburtstage mit Kuchen und Spielen."
+      },
+      {
+        "prompt": "Next week, it will be her best friend's birthday.",
+        "answer": "Nächste Woche hat ihre beste Freundin Geburtstag."
+      },
+      {
+        "prompt": "Next week, it will be her best friend's birthday and she is already very excited.",
+        "answer": "Nächste Woche hat ihre beste Freundin Geburtstag und sie ist schon sehr aufgeregt."
+      },
+      {
+        "prompt": "They often paint and craft at kindergarten.",
+        "answer": "Im Kindergarten malen und basteln sie oft."
+      },
+      {
+        "prompt": "They often paint and craft at kindergarten, and my daughter loves doing art.",
+        "answer": "Im Kindergarten malen und basteln sie oft, und meine Tochter liebt es, Kunst zu machen."
+      },
+      {
+        "prompt": "She is always happy when she goes to kindergarten.",
+        "answer": "Sie ist immer glücklich, wenn sie in den Kindergarten geht."
+      },
+      {
+        "prompt": "She is always happy when she goes to kindergarten because she can play with her friends.",
+        "answer": "Sie ist immer glücklich, wenn sie in den Kindergarten geht, weil sie mit ihren Freunden spielen kann."
+      }
+    ]
+  }
 }
