@@ -455,5 +455,94 @@
         "answer": "Ich hoffe, bald einen passenden Job zu finden. Danke für Ihre Hilfe."
       }
     ]
+  },
+  "Restaurant": {
+    "title": "Ordering Food in a Restaurant",
+    "questions": [
+      {
+        "prompt": "Hello, I would like to see the menu.",
+        "answer": "Hallo, ich möchte die Speisekarte sehen."
+      },
+      {
+        "prompt": "I would like to see the menu. What do you recommend?",
+        "answer": "Ich möchte die Speisekarte sehen. Was empfehlen Sie?"
+      },
+      {
+        "prompt": "What do you recommend? Are there any specials today?",
+        "answer": "Was empfehlen Sie? Gibt es heute spezielle Gerichte?"
+      },
+      {
+        "prompt": "Are there any specials today? I would like something delicious.",
+        "answer": "Gibt es heute spezielle Gerichte? Ich hätte gerne etwas Leckeres."
+      },
+      {
+        "prompt": "I would like something delicious. Can you tell me the ingredients?",
+        "answer": "Ich hätte gerne etwas Leckeres. Können Sie mir die Zutaten sagen?"
+      },
+      {
+        "prompt": "Can you tell me the ingredients? Is it spicy?",
+        "answer": "Können Sie mir die Zutaten sagen? Ist es scharf?"
+      },
+      {
+        "prompt": "Is it spicy? I would like to share a dish with my daughter.",
+        "answer": "Ist es scharf? Ich möchte ein Gericht mit meiner Tochter teilen."
+      },
+      {
+        "prompt": "I would like to share a dish with my daughter. Can I get an extra fork?",
+        "answer": "Ich möchte ein Gericht mit meiner Tochter teilen. Kann ich bitte eine zusätzliche Gabel bekommen?"
+      },
+      {
+        "prompt": "Can I get an extra fork? Also, can I have an extra knife?",
+        "answer": "Kann ich bitte eine zusätzliche Gabel bekommen? Kann ich auch ein zusätzliches Messer haben?"
+      },
+      {
+        "prompt": "Also, can I have an extra knife? We might need an extra bowl for her food.",
+        "answer": "Kann ich auch ein zusätzliches Messer haben? Vielleicht brauchen wir eine zusätzliche Schüssel für ihr Essen."
+      },
+      {
+        "prompt": "We might need an extra bowl for her food. Do you have a kids' menu?",
+        "answer": "Vielleicht brauchen wir eine zusätzliche Schüssel für ihr Essen. Haben Sie eine Kinderkarte?"
+      },
+      {
+        "prompt": "Do you have a kids' menu? I would like smaller portions for her.",
+        "answer": "Haben Sie eine Kinderkarte? Ich hätte gerne kleinere Portionen für sie."
+      },
+      {
+        "prompt": "I would like smaller portions for her. What cocktails do you recommend?",
+        "answer": "Ich hätte gerne kleinere Portionen für sie. Welche Cocktails empfehlen Sie?"
+      },
+      {
+        "prompt": "What cocktails do you recommend? I would like something refreshing.",
+        "answer": "Welche Cocktails empfehlen Sie? Ich hätte gerne etwas Erfrischendes."
+      },
+      {
+        "prompt": "I would like something refreshing. Do you have any tissues?",
+        "answer": "Ich hätte gerne etwas Erfrischendes. Haben Sie Taschentücher?"
+      },
+      {
+        "prompt": "Do you have any tissues? We are ready to order now.",
+        "answer": "Haben Sie Taschentücher? Wir sind jetzt bereit zu bestellen."
+      },
+      {
+        "prompt": "We are ready to order now. The food looks great!",
+        "answer": "Wir sind jetzt bereit zu bestellen. Das Essen sieht großartig aus!"
+      },
+      {
+        "prompt": "The food looks great! Did you enjoy the meal?",
+        "answer": "Das Essen sieht großartig aus! Hat Ihnen das Essen geschmeckt?"
+      },
+      {
+        "prompt": "Did you enjoy the meal? Yes, it was delicious!",
+        "answer": "Hat Ihnen das Essen geschmeckt? Ja, es war lecker!"
+      },
+      {
+        "prompt": "Yes, it was delicious! Can we pay separately or together?",
+        "answer": "Ja, es war lecker! Können wir getrennt oder zusammen bezahlen?"
+      },
+      {
+        "prompt": "Can we pay separately or together? Thank you for your service.",
+        "answer": "Können wir getrennt oder zusammen bezahlen? Vielen Dank für Ihren Service."
+      }
+    ]
   }
 }
