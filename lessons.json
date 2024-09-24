@@ -621,5 +621,74 @@
         "answer": "Das wäre sehr hilfreich. Vielen Dank für Ihre Hilfe!"
       }
     ]
+  },
+  "Elevator": {
+    "title": "Small Talk in the Elevator",
+    "questions": [
+      {
+        "prompt": "Hello! Do you want to come in?",
+        "answer": "Hallo! Möchten Sie hereinkommen?"
+      },
+      {
+        "prompt": "Do you want to come in? The elevator is going down.",
+        "answer": "Möchten Sie hereinkommen? Der Aufzug fährt nach unten."
+      },
+      {
+        "prompt": "The elevator is going down. Which floor do you want to go to?",
+        "answer": "Der Aufzug fährt nach unten. In welchen Stock möchten Sie fahren?"
+      },
+      {
+        "prompt": "Which floor do you want to go to? I’m going to the second floor.",
+        "answer": "In welchen Stock möchten Sie fahren? Ich gehe in den zweiten Stock."
+      },
+      {
+        "prompt": "I’m going to the second floor. What about you?",
+        "answer": "Ich gehe in den zweiten Stock. Und Sie?"
+      },
+      {
+        "prompt": "What about you? Are you going to the first floor?",
+        "answer": "Und Sie? Gehen Sie in den ersten Stock?"
+      },
+      {
+        "prompt": "Are you going to the first floor? That’s great!",
+        "answer": "Gehen Sie in den ersten Stock? Das ist toll!"
+      },
+      {
+        "prompt": "That's great! How have you been?",
+        "answer": "Das ist toll! Wie geht es Ihnen?"
+      },
+      {
+        "prompt": "How have you been? I’ve been doing well, thank you.",
+        "answer": "Wie geht es Ihnen? Mir geht es gut, danke."
+      },
+      {
+        "prompt": "I’ve been doing well, thank you. Have you done anything interesting lately?",
+        "answer": "Mir geht es gut, danke. Haben Sie in letzter Zeit etwas Interessantes gemacht?"
+      },
+      {
+        "prompt": "Have you done anything interesting lately? I just went to a concert.",
+        "answer": "Haben Sie in letzter Zeit etwas Interessantes gemacht? Ich war gerade auf einem Konzert."
+      },
+      {
+        "prompt": "I just went to a concert. It was really fun!",
+        "answer": "Ich war gerade auf einem Konzert. Es hat wirklich Spaß gemacht!"
+      },
+      {
+        "prompt": "It was really fun! I hope to go to another one soon.",
+        "answer": "Es hat wirklich Spaß gemacht! Ich hoffe, bald wieder auf eines zu gehen."
+      },
+      {
+        "prompt": "I hope to go to another one soon. Have a great day!",
+        "answer": "Ich hoffe, bald wieder auf eines zu gehen. Einen schönen Tag noch!"
+      },
+      {
+        "prompt": "Have a great day! See you later!",
+        "answer": "Einen schönen Tag noch! Bis später!"
+      },
+      {
+        "prompt": "See you later! Take care!",
+        "answer": "Bis später! Passen Sie auf sich auf!"
+      }
+    ]
   }
 }
