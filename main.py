@@ -35,7 +35,7 @@ def main():
     # Display username in top-right corner
     st.markdown(f'<div style="position: fixed; top: 10px; right: 10px; z-index: 1000; background-color: white; padding: 5px; border-radius: 5px;">{st.session_state.username}</div>', unsafe_allow_html=True)
 
-    st.title("yigit's method")
+    st.title("Language Learning App")
 
     # Load lessons data
     with open("lessons.json", "r") as f:
@@ -61,9 +61,12 @@ def main():
         
         correct_answer = question["answer"]
         
-        user_answer = st.text_input("Your answer:", key="user_input", value=st.session_state.user_answer)
-        
-        if st.button("Submit"):
+        # Use a form to enable submission on Enter key press
+        with st.form(key='answer_form'):
+            user_answer = st.text_input("Your answer:", key="user_input", value=st.session_state.user_answer)
+            submit_button = st.form_submit_button(label='Submit')
+
+        if submit_button:
             st.session_state.user_answer = user_answer
             if clean_text(user_answer) == clean_text(correct_answer):
                 st.success("Correct! Well done.")
