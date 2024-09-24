@@ -1,5 +1,5 @@
 {
-  "My Daughter's Kindergarten": {
+  "lesson4": {
     "title": "My Daughter's Kindergarten",
     "questions": [
       {
@@ -87,8 +87,7 @@
         "answer": "Sie ist immer glücklich, wenn sie in den Kindergarten geht, weil sie mit ihren Freunden spielen kann."
       }
     ]
-  }
-  {
+  },
   "lesson5": {
     "title": "Shopping in the Supermarket",
     "questions": [
