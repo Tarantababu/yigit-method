@@ -20,7 +20,7 @@ def get_next_word(correct_answer, user_answer):
     return ""
 
 def check_answer():
-    user_answer = st.session_state.user_input
+    user_answer = st.session_state.get('user_input', '')
     correct_answer = st.session_state.correct_answer
     if clean_text(user_answer) == clean_text(correct_answer):
         st.session_state.feedback = "🎉 Correct! Well done."
@@ -63,7 +63,8 @@ def main():
             st.session_state.score = 0
             st.session_state.streak = 0
             st.session_state.question_index = 0
-            st.session_state.user_input = ""  # Clear input field
+            if 'user_input' in st.session_state:
+                del st.session_state.user_input
             st.experimental_rerun()
 
     current_lesson = lessons[lesson_id]
@@ -77,8 +78,6 @@ def main():
         st.session_state.feedback = ""
     if "attempts" not in st.session_state:
         st.session_state.attempts = 0
-    if "user_input" not in st.session_state:
-        st.session_state.user_input = ""
 
     # Main game area
     st.title("Language Learning Game")
@@ -95,7 +94,7 @@ def main():
         
         st.session_state.correct_answer = question["answer"]
         
-        user_input = st.text_input("Your answer:", key="user_input", value=st.session_state.user_input, on_change=check_answer)
+        user_input = st.text_input("Your answer:", key="user_input", on_change=check_answer)
         
         col1, col2 = st.columns(2)
         with col1:
@@ -112,7 +111,8 @@ def main():
                     st.session_state.feedback = ""
                     st.session_state.show_next = False
                     st.session_state.attempts = 0
-                    st.session_state.user_input = ""  # Clear input field
+                    if 'user_input' in st.session_state:
+                        del st.session_state.user_input
                     st.experimental_rerun()
     else:
         st.balloons()
@@ -124,7 +124,8 @@ def main():
             st.session_state.feedback = ""
             st.session_state.show_next = False
             st.session_state.attempts = 0
-            st.session_state.user_input = ""  # Clear input field
+            if 'user_input' in st.session_state:
+                del st.session_state.user_input
             st.experimental_rerun()
 
     # Fun facts or tips
