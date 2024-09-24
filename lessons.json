@@ -237,5 +237,126 @@
         "answer": "Meine Tochter genießt den Kindergarten hier und hat viele neue Freunde gefunden."
       }
     ]
+  },
+  "Directions/Travels": {
+    "title": "Asking for Directions and Train Travel",
+    "questions": [
+      {
+        "prompt": "Excuse me, where is the main train station?",
+        "answer": "Entschuldigung, wo ist der Hauptbahnhof?"
+      },
+      {
+        "prompt": "Excuse me, where is the main train station? I need to catch a train.",
+        "answer": "Entschuldigung, wo ist der Hauptbahnhof? Ich muss einen Zug erwischen."
+      },
+      {
+        "prompt": "Excuse me, where is the main train station? I need to catch a train to Berlin.",
+        "answer": "Entschuldigung, wo ist der Hauptbahnhof? Ich muss einen Zug nach Berlin erwischen."
+      },
+      {
+        "prompt": "Is there a restaurant near the train station?",
+        "answer": "Gibt es ein Restaurant in der Nähe des Bahnhofs?"
+      },
+      {
+        "prompt": "Is there a restaurant near the train station? I would like to have a quick meal before my train.",
+        "answer": "Gibt es ein Restaurant in der Nähe des Bahnhofs? Ich möchte vor meinem Zug schnell etwas essen."
+      },
+      {
+        "prompt": "Where do I get on the train?",
+        "answer": "Wo steige ich in den Zug ein?"
+      },
+      {
+        "prompt": "Where do I get on the train? Which platform do I need?",
+        "answer": "Wo steige ich in den Zug ein? Welches Gleis brauche ich?"
+      },
+      {
+        "prompt": "Where do I get on the train? Which platform do I need, and at what time does the train leave?",
+        "answer": "Wo steige ich in den Zug ein? Welches Gleis brauche ich, und um welche Uhrzeit fährt der Zug ab?"
+      },
+      {
+        "prompt": "Is this seat available?",
+        "answer": "Ist dieser Platz frei?"
+      },
+      {
+        "prompt": "Is this seat available, or should I find another one?",
+        "answer": "Ist dieser Platz frei, oder sollte ich einen anderen finden?"
+      },
+      {
+        "prompt": "Is this seat available? I would like to sit here because I need to get off soon.",
+        "answer": "Ist dieser Platz frei? Ich würde gerne hier sitzen, weil ich bald aussteigen muss."
+      },
+      {
+        "prompt": "Do I need to get off at this stop?",
+        "answer": "Muss ich an dieser Haltestelle aussteigen?"
+      },
+      {
+        "prompt": "Do I need to get off at this stop, or is the next one mine?",
+        "answer": "Muss ich an dieser Haltestelle aussteigen, oder ist die nächste meine?"
+      },
+      {
+        "prompt": "Do I need to get off at this stop, or is the next stop the central station?",
+        "answer": "Muss ich an dieser Haltestelle aussteigen, oder ist die nächste der Hauptbahnhof?"
+      },
+      {
+        "prompt": "Excuse me, do you know if there is a delay?",
+        "answer": "Entschuldigung, wissen Sie, ob es eine Verspätung gibt?"
+      },
+      {
+        "prompt": "Excuse me, do you know if there is a delay? My train was supposed to arrive by now.",
+        "answer": "Entschuldigung, wissen Sie, ob es eine Verspätung gibt? Mein Zug sollte schon angekommen sein."
+      },
+      {
+        "prompt": "Excuse me, do you know if there is a delay? How can I reach my destination if the train is canceled?",
+        "answer": "Entschuldigung, wissen Sie, ob es eine Verspätung gibt? Wie kann ich mein Ziel erreichen, wenn der Zug ausfällt?"
+      },
+      {
+        "prompt": "Hi, do you travel by train often?",
+        "answer": "Hallo, fahren Sie oft mit dem Zug?"
+      },
+      {
+        "prompt": "Hi, do you travel by train often? I find it quite convenient.",
+        "answer": "Hallo, fahren Sie oft mit dem Zug? Ich finde es ziemlich praktisch."
+      },
+      {
+        "prompt": "Hi, do you travel by train often? I find it quite convenient, especially when traveling with my daughter.",
+        "answer": "Hallo, fahren Sie oft mit dem Zug? Ich finde es ziemlich praktisch, besonders wenn ich mit meiner Tochter reise."
+      },
+      {
+        "prompt": "Oh, this is my daughter, her name is Mavi.",
+        "answer": "Oh, das ist meine Tochter, sie heißt Mavi."
+      },
+      {
+        "prompt": "Oh, this is my daughter, her name is Mavi. She loves dancing and listening to music.",
+        "answer": "Oh, das ist meine Tochter, sie heißt Mavi. Sie liebt es zu tanzen und Musik zu hören."
+      },
+      {
+        "prompt": "Oh, this is my daughter, her name is Mavi. She loves dancing and listening to music, especially on long trips like this.",
+        "answer": "Oh, das ist meine Tochter, sie heißt Mavi. Sie liebt es zu tanzen und Musik zu hören, besonders auf langen Reisen wie dieser."
+      },
+      {
+        "prompt": "We moved to Germany three years ago.",
+        "answer": "Wir sind vor drei Jahren nach Deutschland gezogen."
+      },
+      {
+        "prompt": "We moved to Germany three years ago, from Istanbul, Turkey.",
+        "answer": "Wir sind vor drei Jahren von Istanbul, Türkei, nach Deutschland gezogen."
+      },
+      {
+        "prompt": "We moved to Germany three years ago and are still getting used to the lifestyle here.",
+        "answer": "Wir sind vor drei Jahren nach Deutschland gezogen und gewöhnen uns immer noch an den Lebensstil hier."
+      },
+      {
+        "prompt": "Do you know how we can reach our destination if the train is canceled?",
+        "answer": "Wissen Sie, wie wir unser Ziel erreichen können, wenn der Zug ausfällt?"
+      },
+      {
+        "prompt": "Do you know how we can reach our destination if the train is canceled? Maybe we could take a bus or another train.",
+        "answer": "Wissen Sie, wie wir unser Ziel erreichen können, wenn der Zug ausfällt? Vielleicht könnten wir einen Bus oder einen anderen Zug nehmen."
+      },
+      {
+        "prompt": "Do you know how we can reach our destination if the train is canceled? Maybe we could take a bus or another train, but we need to check the schedule.",
+        "answer": "Wissen Sie, wie wir unser Ziel erreichen können, wenn der Zug ausfällt? Vielleicht könnten wir einen Bus oder einen anderen Zug nehmen, aber wir müssen den Fahrplan überprüfen."
+      }
+    ]
   }
 }
