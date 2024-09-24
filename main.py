@@ -6,12 +6,13 @@ def save_progress(username, lesson_id, completed):
     with open(f"{username}_progress.json", "w") as f:
         json.dump({"lesson_id": lesson_id, "completed": completed, "timestamp": str(datetime.now())}, f)
 
-def split_sentence(sentence):
-    words = sentence.split()
-    chunks = []
-    for i in range(len(words)):
-        chunks.append(" ".join(words[:i+1]))
-    return chunks
+def get_hint(correct_answer, user_answer):
+    correct_words = correct_answer.lower().split()
+    user_words = user_answer.lower().split()
+    for i, word in enumerate(correct_words):
+        if i >= len(user_words) or user_words[i] != word:
+            return f"Hint: The next word is '{word}'"
+    return "Your answer is correct, but incomplete. Try adding more words."
 
 def main():
     st.title("Language Learning App")
@@ -44,43 +45,25 @@ def main():
         st.write(question["prompt"])
         
         correct_answer = question["answer"]
-        chunks = split_sentence(correct_answer)
         
-        # Initialize session state for this question's progress if not exists
-        if "current_progress" not in st.session_state:
-            st.session_state.current_progress = 0
+        user_answer = st.text_input("Your answer:", key="user_input")
         
-        if st.session_state.current_progress < len(chunks):
-            user_answer = st.text_input("Complete the sentence:", value=chunks[st.session_state.current_progress], key="user_input")
-            
-            if user_answer:
-                if user_answer.lower().strip() == correct_answer[:len(chunks[st.session_state.current_progress])].lower().strip():
-                    st.session_state.current_progress += 1
-                    if st.session_state.current_progress < len(chunks):
-                        st.success("Correct! Continue with the next part.")
-                    else:
-                        st.success("Correct! You've completed this sentence.")
-                        st.write("Explanation:", question["explanation"])
-                        if st.button("Next Question"):
-                            st.session_state.question_index += 1
-                            st.session_state.current_progress = 0
-                            st.experimental_rerun()
-                else:
-                    st.error("Not quite. Try again.")
-        else:
-            st.success(f"Completed sentence: {correct_answer}")
-            st.write("Explanation:", question["explanation"])
-            if st.button("Next Question"):
-                st.session_state.question_index += 1
-                st.session_state.current_progress = 0
-                st.experimental_rerun()
+        if st.button("Submit"):
+            if user_answer.lower().strip() == correct_answer.lower().strip():
+                st.success("Correct! Well done.")
+                st.write("Explanation:", question["explanation"])
+                if st.button("Next Question"):
+                    st.session_state.question_index += 1
+                    st.experimental_rerun()
+            else:
+                st.error("Not quite correct. Here's a hint:")
+                st.write(get_hint(correct_answer, user_answer))
     else:
         st.success("Congratulations! You've completed all questions in this lesson.")
         if st.button("Complete Lesson"):
             save_progress(username, lesson_id, True)
             st.success(f"Lesson completed: {current_lesson['title']}")
             st.session_state.question_index = 0
-            st.session_state.current_progress = 0
 
 if __name__ == "__main__":
     main()
