@@ -187,7 +187,16 @@ def main():
     # Sidebar for lesson selection and stats
     with st.sidebar:
         st.title(f"Willkommen, {st.session_state.username}!")
-        lesson_id = st.selectbox("Wählen Sie eine Lektion:", list(lessons.keys()), index=list(lessons.keys()).index(st.session_state.current_lesson) if st.session_state.current_lesson else 0)
+        
+        # Handle the case where current_lesson might not be set
+        if "current_lesson" not in st.session_state or st.session_state.current_lesson not in lessons:
+            st.session_state.current_lesson = list(lessons.keys())[0]  # Default to first lesson
+        
+        lesson_id = st.selectbox(
+            "Wählen Sie eine Lektion:", 
+            list(lessons.keys()), 
+            index=list(lessons.keys()).index(st.session_state.current_lesson)
+        )
         st.metric("Punktzahl", st.session_state.score)
         st.metric("Serie", st.session_state.streak)
         st.metric("Abgeschlossene Lektionen", st.session_state.lessons_completed)
@@ -200,6 +209,7 @@ def main():
             st.session_state.reset_input = True
             st.session_state.colored_answer = None
             st.session_state.review_items = []
+            st.session_state.current_lesson = list(lessons.keys())[0]  # Reset to first lesson
             save_progress(st.session_state.username)
             st.experimental_rerun()
 
