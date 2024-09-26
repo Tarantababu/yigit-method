@@ -4,6 +4,9 @@ from datetime import datetime
 import re
 import random
 import time
+from gtts import gTTS
+import os
+import base64
 
 def save_progress(username, lesson_id, score):
     with open(f"{username}_progress.json", "w") as f:
@@ -20,7 +23,7 @@ def get_colored_answer(user_answer, correct_answer):
         if i < len(correct_words) and word == correct_words[i]:
             colored_words.append(f'<span style="color: darkgreen;">{word}</span>')
         else:
-            colored_words.append(word)
+            colored_words.append(f'<span style="color: red;">{word}</span>')
     return " ".join(colored_words)
 
 def get_next_word(correct_answer, user_answer):
@@ -30,6 +33,17 @@ def get_next_word(correct_answer, user_answer):
         if i >= len(user_words) or user_words[i] != word:
             return word
     return ""
+
+def text_to_speech(text, lang='en'):
+    tts = gTTS(text=text, lang=lang, slow=False)
+    filename = f"temp_audio_{hash(text)}.mp3"
+    tts.save(filename)
+    with open(filename, "rb") as f:
+        audio_bytes = f.read()
+    os.remove(filename)
+    audio_base64 = base64.b64encode(audio_bytes).decode()
+    audio_tag = f'<audio autoplay="true" src="data:audio/mp3;base64,{audio_base64}">'
+    st.markdown(audio_tag, unsafe_allow_html=True)
 
 def check_answer():
     user_answer = st.session_state.get('user_input', '')
@@ -41,12 +55,24 @@ def check_answer():
         st.session_state.answer_correct = True
         st.session_state.move_to_next = True
         st.session_state.colored_answer = None
+        st.session_state.review_items.append({
+            "question": st.session_state.current_question["prompt"],
+            "correct_answer": correct_answer,
+            "user_answer": user_answer,
+            "is_correct": True
+        })
     else:
         next_word = get_next_word(correct_answer, user_answer)
         st.session_state.feedback = f"Not quite. Try again! Hint: {next_word}"
         st.session_state.streak = 0
         st.session_state.answer_correct = False
         st.session_state.colored_answer = get_colored_answer(user_answer, correct_answer)
+        st.session_state.review_items.append({
+            "question": st.session_state.current_question["prompt"],
+            "correct_answer": correct_answer,
+            "user_answer": user_answer,
+            "is_correct": False
+        })
     st.session_state.attempts += 1
 
 def next_question():
@@ -63,6 +89,9 @@ def main():
     
     if "username" not in st.session_state:
         st.session_state.username = ""
+    
+    if "review_items" not in st.session_state:
+        st.session_state.review_items = []
     
     if not st.session_state.username:
         st.title("Welcome to the Language Learning Game!")
@@ -92,6 +121,7 @@ def main():
             st.session_state.move_to_next = False
             st.session_state.reset_input = True
             st.session_state.colored_answer = None
+            st.session_state.review_items = []
             st.experimental_rerun()
 
     current_lesson = lessons[lesson_id]
@@ -122,10 +152,15 @@ def main():
     # Get current question
     if st.session_state.question_index < len(current_lesson["questions"]):
         question = current_lesson["questions"][st.session_state.question_index]
+        st.session_state.current_question = question
         
         st.header(question["prompt"])
         
         st.session_state.correct_answer = question["answer"]
+        
+        # Text-to-speech button
+        if st.button("Listen to the answer"):
+            text_to_speech(question["answer"], lang=current_lesson.get("language", "en"))
         
         # Reset input if flag is set
         if st.session_state.reset_input:
@@ -153,6 +188,20 @@ def main():
         st.balloons()
         st.success("🎉 Congratulations! You've completed all questions in this lesson.")
         st.write(f"Your final score: {st.session_state.score}")
+        
+        # Review mode
+        st.subheader("Review Mode")
+        for i, item in enumerate(st.session_state.review_items):
+            with st.expander(f"Question {i+1}: {item['question']}"):
+                st.write(f"Correct answer: {item['correct_answer']}")
+                st.write(f"Your answer: {item['user_answer']}")
+                if item['is_correct']:
+                    st.success("Correct!")
+                else:
+                    st.error("Incorrect")
+                if st.button(f"Listen to correct answer (Q{i+1})", key=f"listen_{i}"):
+                    text_to_speech(item['correct_answer'], lang=current_lesson.get("language", "en"))
+        
         if st.button("Play Again"):
             save_progress(st.session_state.username, lesson_id, st.session_state.score)
             st.session_state.question_index = 0
@@ -162,6 +211,7 @@ def main():
             st.session_state.move_to_next = False
             st.session_state.reset_input = True
             st.session_state.colored_answer = None
+            st.session_state.review_items = []
             st.experimental_rerun()
 
     # Fun facts or tips
