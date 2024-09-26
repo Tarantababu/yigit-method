@@ -250,15 +250,18 @@ def custom_lesson_manager():
         with open("custom_lessons.json", "r") as f:
             custom_lessons = json.load(f)
         
-        for lesson, content in custom_lessons.items():
-            st.write(f"Lektion: {lesson}")
-            if st.button(f"Löschen: {lesson}"):
-                del custom_lessons[lesson]
-                with open("custom_lessons.json", "w") as f:
-                    json.dump(custom_lessons, f)
-                st.success(f"Lektion '{lesson}' wurde gelöscht!")
-                lessons_changed = True
-                st.experimental_rerun()
+        if custom_lessons:
+            for lesson, content in custom_lessons.items():
+                st.write(f"Lektion: {lesson}")
+                if st.button(f"Löschen: {lesson}"):
+                    del custom_lessons[lesson]
+                    with open("custom_lessons.json", "w") as f:
+                        json.dump(custom_lessons, f)
+                    st.success(f"Lektion '{lesson}' wurde gelöscht!")
+                    lessons_changed = True
+                    st.experimental_rerun()
+        else:
+            st.info("Noch keine benutzerdefinierten Lektionen vorhanden.")
     
     except FileNotFoundError:
         st.info("Noch keine benutzerdefinierten Lektionen vorhanden.")
@@ -345,8 +348,7 @@ def main():
                 save_progress(st.session_state.username)
                 save_achievements({})  # Reset achievements file
                 st.experimental_rerun()
-
-        # Display achievements
+                # Display achievements
         display_achievements(st.session_state.achievements)
 
         if st.session_state.current_lesson in all_lessons:
