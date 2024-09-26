@@ -84,6 +84,57 @@ def next_question():
     st.session_state.reset_input = True
     st.session_state.colored_answer = None
 
+# New functions for the achievement system
+def load_achievements():
+    try:
+        with open(f"{st.session_state.username}_achievements.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
+
+def save_achievements(achievements):
+    with open(f"{st.session_state.username}_achievements.json", "w") as f:
+        json.dump(achievements, f)
+
+def check_achievements(achievements):
+    score = st.session_state.score
+    streak = st.session_state.streak
+    lessons_completed = st.session_state.lessons_completed
+    
+    new_achievements = []
+
+    if score >= 100 and "Punktesammler" not in achievements:
+        achievements["Punktesammler"] = "100 Punkte erreicht"
+        new_achievements.append("Punktesammler")
+
+    if score >= 500 and "Punkteprofi" not in achievements:
+        achievements["Punkteprofi"] = "500 Punkte erreicht"
+        new_achievements.append("Punkteprofi")
+
+    if streak >= 5 and "Streber" not in achievements:
+        achievements["Streber"] = "5er Serie erreicht"
+        new_achievements.append("Streber")
+
+    if streak >= 10 and "Serienmeister" not in achievements:
+        achievements["Serienmeister"] = "10er Serie erreicht"
+        new_achievements.append("Serienmeister")
+
+    if lessons_completed >= 1 and "Anfänger" not in achievements:
+        achievements["Anfänger"] = "Erste Lektion abgeschlossen"
+        new_achievements.append("Anfänger")
+
+    if lessons_completed >= 5 and "Fleißiger Schüler" not in achievements:
+        achievements["Fleißiger Schüler"] = "5 Lektionen abgeschlossen"
+        new_achievements.append("Fleißiger Schüler")
+
+    save_achievements(achievements)
+    return new_achievements
+
+def display_achievements(achievements):
+    st.sidebar.subheader("Errungenschaften")
+    for badge, description in achievements.items():
+        st.sidebar.success(f"🏆 {badge}: {description}")
+
 def main():
     st.set_page_config(layout="wide", page_title="Deutsch Lernspiel")
     
@@ -93,6 +144,9 @@ def main():
     if "review_items" not in st.session_state:
         st.session_state.review_items = []
     
+    if "lessons_completed" not in st.session_state:
+        st.session_state.lessons_completed = 0
+    
     if not st.session_state.username:
         st.title("Willkommen beim Deutsch Lernspiel!")
         username = st.text_input("Geben Sie Ihren Benutzernamen ein, um zu beginnen:")
@@ -100,8 +154,12 @@ def main():
             st.session_state.username = username
             st.session_state.score = 0
             st.session_state.streak = 0
+            st.session_state.lessons_completed = 0
             st.experimental_rerun()
         return
+
+    # Load achievements
+    achievements = load_achievements()
 
     # Load lessons data
     with open("lessons.json", "r") as f:
@@ -113,6 +171,7 @@ def main():
         lesson_id = st.selectbox("Wählen Sie eine Lektion:", list(lessons.keys()))
         st.metric("Punktzahl", st.session_state.score)
         st.metric("Serie", st.session_state.streak)
+        st.metric("Abgeschlossene Lektionen", st.session_state.lessons_completed)
         if st.button("Fortschritt zurücksetzen"):
             st.session_state.score = 0
             st.session_state.streak = 0
@@ -123,6 +182,9 @@ def main():
             st.session_state.colored_answer = None
             st.session_state.review_items = []
             st.experimental_rerun()
+
+    # Display achievements
+    display_achievements(achievements)
 
     current_lesson = lessons[lesson_id]
 
@@ -188,6 +250,14 @@ def main():
         st.balloons()
         st.success("🎉 Herzlichen Glückwunsch! Sie haben alle Fragen in dieser Lektion beantwortet.")
         st.write(f"Ihre Endpunktzahl: {st.session_state.score}")
+        
+        # Increment completed lessons
+        st.session_state.lessons_completed += 1
+        
+        # Check for new achievements
+        new_achievements = check_achievements(achievements)
+        if new_achievements:
+            st.success(f"Neue Errungenschaften freigeschaltet: {', '.join(new_achievements)}")
         
         # Review mode
         st.subheader("Überprüfungsmodus")
