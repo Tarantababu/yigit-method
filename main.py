@@ -379,11 +379,15 @@ def main():
             st.title("Deutsch Lernspiel")
             
             # Progress bar
-            if len(current_lesson["questions"]) > 0:
-                progress = st.session_state.question_index / len(current_lesson["questions"])
-                st.progress(progress)
+            if "questions" in current_lesson and len(current_lesson["questions"]) > 0:
+                if st.session_state.question_index < len(current_lesson["questions"]):
+                    progress = st.session_state.question_index / len(current_lesson["questions"])
+                    st.progress(progress)
+                else:
+                    st.progress(1.0)  # Set progress to 100% if all questions are answered
             else:
                 st.warning("Diese Lektion enthält keine Fragen.")
+                return  # Exit the function if there are no questions
 
             # Get current question
             if st.session_state.question_index < len(current_lesson["questions"]):
