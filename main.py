@@ -7,7 +7,13 @@ import time
 from gtts import gTTS
 import os
 import base64
-import speech_recognition as sr
+
+# Try to import speech_recognition, but don't fail if it's not available
+try:
+    import speech_recognition as sr
+    speech_recognition_available = True
+except ImportError:
+    speech_recognition_available = False
 
 def save_progress(username):
     progress = {
@@ -68,6 +74,10 @@ def text_to_speech(text, lang='de'):
     st.markdown(audio_tag, unsafe_allow_html=True)
 
 def voice_to_text():
+    if not speech_recognition_available:
+        st.error("Spracherkennung ist nicht verfügbar. Bitte installieren Sie das 'SpeechRecognition' Paket.")
+        return ""
+
     r = sr.Recognizer()
     with sr.Microphone() as source:
         st.write("Sprechen Sie jetzt...")
@@ -284,8 +294,11 @@ def main():
             st.session_state.user_input = ""
             st.session_state.reset_input = False
         
-        # Add voice input option
-        input_method = st.radio("Wie möchten Sie antworten?", ("Text", "Stimme"))
+        # Add voice input option only if speech recognition is available
+        if speech_recognition_available:
+            input_method = st.radio("Wie möchten Sie antworten?", ("Text", "Stimme"))
+        else:
+            input_method = "Text"
         
         if input_method == "Text":
             user_input = st.text_input("Ihre Antwort:", key="user_input", on_change=check_answer)
