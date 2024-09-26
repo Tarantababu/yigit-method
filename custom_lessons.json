@@ -1,1 +1,11 @@
-
+{
+  "Kindergarten": {
+    "title": "Custom Lesson",
+    "questions": [
+      {
+        "prompt": "My daughter goes to kindergarten.",
+        "answer": "Meine Tochter geht in den Kindergarten."
+      }
+    ]
+  }
+  }
