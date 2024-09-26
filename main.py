@@ -188,8 +188,12 @@ def display_achievements(achievements):
 
 def load_lessons():
     # Load built-in lessons
-    with open("lessons.json", "r") as f:
-        built_in_lessons = json.load(f)
+    try:
+        with open("lessons.json", "r") as f:
+            built_in_lessons = json.load(f)
+    except FileNotFoundError:
+        st.error("lessons.json file not found. Please make sure it exists in the same directory as the script.")
+        built_in_lessons = {}
     
     # Load custom lessons
     try:
@@ -300,22 +304,29 @@ def main():
             
             # Handle the case where current_lesson might not be set
             if "current_lesson" not in st.session_state or st.session_state.current_lesson not in all_lessons:
-                st.session_state.current_lesson = list(all_lessons.keys())[0]  # Default to first lesson
+                st.session_state.current_lesson = list(all_lessons.keys())[0] if all_lessons else None
             
             # Create a list of lesson options with separators
-            lesson_options = ["--- Integrierte Lektionen ---"] + list(built_in_lessons.keys())
+            lesson_options = []
+            if built_in_lessons:
+                lesson_options.append("--- Integrierte Lektionen ---")
+                lesson_options.extend(list(built_in_lessons.keys()))
             if custom_lessons:
-                lesson_options += ["--- Benutzerdefinierte Lektionen ---"] + list(custom_lessons.keys())
+                lesson_options.append("--- Benutzerdefinierte Lektionen ---")
+                lesson_options.extend(list(custom_lessons.keys()))
             
-            selected_lesson = st.selectbox(
-                "Wählen Sie eine Lektion:", 
-                lesson_options,
-                index=lesson_options.index(st.session_state.current_lesson) if st.session_state.current_lesson in lesson_options else 0
-            )
-            
-            # Update current_lesson only if a valid lesson is selected
-            if selected_lesson in all_lessons:
-                st.session_state.current_lesson = selected_lesson
+            if lesson_options:
+                selected_lesson = st.selectbox(
+                    "Wählen Sie eine Lektion:", 
+                    lesson_options,
+                    index=lesson_options.index(st.session_state.current_lesson) if st.session_state.current_lesson in lesson_options else 0
+                )
+                
+                # Update current_lesson only if a valid lesson is selected
+                if selected_lesson in all_lessons:
+                    st.session_state.current_lesson = selected_lesson
+            else:
+                st.warning("Keine Lektionen verfügbar. Bitte fügen Sie einige hinzu.")
 
             st.metric("Punktzahl", st.session_state.score)
             st.metric("Serie", st.session_state.streak)
@@ -329,7 +340,7 @@ def main():
                 st.session_state.reset_input = True
                 st.session_state.colored_answer = None
                 st.session_state.review_items = []
-                st.session_state.current_lesson = list(all_lessons.keys())[0]  # Reset to first lesson
+                st.session_state.current_lesson = list(all_lessons.keys())[0] if all_lessons else None
                 st.session_state.achievements = {}  # Reset achievements
                 save_progress(st.session_state.username)
                 save_achievements({})  # Reset achievements file
