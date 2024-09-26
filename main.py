@@ -296,23 +296,18 @@ def main():
         
         # Add voice input option only if speech recognition is available
         if speech_recognition_available:
-            col1, col2 = st.columns(2)
-            with col1:
-                user_input = st.text_input("Ihre Antwort:", key="user_input")
-            with col2:
-                if st.button("Mit Stimme antworten 🎤"):
-                    with st.spinner("Hören..."):
-                        user_input = voice_to_text()
-                        if user_input:
-                            st.session_state.user_input = user_input
-                            st.success(f"Erkannte Antwort: {user_input}")
-                        else:
-                            st.error("Keine Antwort erkannt. Bitte versuchen Sie es erneut.")
+            input_method = st.radio("Wie möchten Sie antworten?", ("Text", "Stimme"))
         else:
-            user_input = st.text_input("Ihre Antwort:", key="user_input")
+            input_method = "Text"
         
-        if st.button("Antwort überprüfen"):
-            check_answer()
+        if input_method == "Text":
+            user_input = st.text_input("Ihre Antwort:", key="user_input", on_change=check_answer)
+        else:
+            if st.button("Klicken Sie hier, um zu sprechen"):
+                user_input = voice_to_text()
+                st.session_state.user_input = user_input
+                st.write(f"Erkannte Antwort: {user_input}")
+                check_answer()
         
         if st.session_state.feedback:
             if "Richtig" in st.session_state.feedback:
