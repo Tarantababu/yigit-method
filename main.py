@@ -7,6 +7,7 @@ import time
 from gtts import gTTS
 import os
 import base64
+import speech_recognition as sr
 
 def save_progress(username):
     progress = {
@@ -65,6 +66,23 @@ def text_to_speech(text, lang='de'):
     audio_base64 = base64.b64encode(audio_bytes).decode()
     audio_tag = f'<audio autoplay="true" src="data:audio/mp3;base64,{audio_base64}">'
     st.markdown(audio_tag, unsafe_allow_html=True)
+
+def voice_to_text():
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        st.write("Sprechen Sie jetzt...")
+        audio = r.listen(source)
+        st.write("Spracherkennung läuft...")
+    
+    try:
+        text = r.recognize_google(audio, language="de-DE")
+        return text
+    except sr.UnknownValueError:
+        st.error("Entschuldigung, ich konnte das nicht verstehen.")
+        return ""
+    except sr.RequestError as e:
+        st.error(f"Konnte keine Ergebnisse vom Google Speech Recognition service abrufen; {e}")
+        return ""
 
 def check_answer():
     user_answer = st.session_state.get('user_input', '')
@@ -266,7 +284,17 @@ def main():
             st.session_state.user_input = ""
             st.session_state.reset_input = False
         
-        user_input = st.text_input("Ihre Antwort:", key="user_input", on_change=check_answer)
+        # Add voice input option
+        input_method = st.radio("Wie möchten Sie antworten?", ("Text", "Stimme"))
+        
+        if input_method == "Text":
+            user_input = st.text_input("Ihre Antwort:", key="user_input", on_change=check_answer)
+        else:
+            if st.button("Klicken Sie hier, um zu sprechen"):
+                user_input = voice_to_text()
+                st.session_state.user_input = user_input
+                st.write(f"Erkannte Antwort: {user_input}")
+                check_answer()
         
         if st.session_state.feedback:
             if "Richtig" in st.session_state.feedback:
