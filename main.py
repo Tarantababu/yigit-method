@@ -8,9 +8,30 @@ from gtts import gTTS
 import os
 import base64
 
-def save_progress(username, lesson_id, score):
+def save_progress(username):
+    progress = {
+        "score": st.session_state.score,
+        "streak": st.session_state.streak,
+        "lessons_completed": st.session_state.lessons_completed,
+        "current_lesson": st.session_state.current_lesson,
+        "question_index": st.session_state.question_index,
+        "timestamp": str(datetime.now())
+    }
     with open(f"{username}_progress.json", "w") as f:
-        json.dump({"lesson_id": lesson_id, "score": score, "timestamp": str(datetime.now())}, f)
+        json.dump(progress, f)
+
+def load_progress(username):
+    try:
+        with open(f"{username}_progress.json", "r") as f:
+            progress = json.load(f)
+        st.session_state.score = progress["score"]
+        st.session_state.streak = progress["streak"]
+        st.session_state.lessons_completed = progress["lessons_completed"]
+        st.session_state.current_lesson = progress["current_lesson"]
+        st.session_state.question_index = progress["question_index"]
+        return True
+    except FileNotFoundError:
+        return False
 
 def clean_text(text):
     return re.sub(r'[,.]', '', text.lower().strip())
@@ -84,7 +105,6 @@ def next_question():
     st.session_state.reset_input = True
     st.session_state.colored_answer = None
 
-# New functions for the achievement system
 def load_achievements():
     try:
         with open(f"{st.session_state.username}_achievements.json", "r") as f:
@@ -141,20 +161,19 @@ def main():
     if "username" not in st.session_state:
         st.session_state.username = ""
     
-    if "review_items" not in st.session_state:
-        st.session_state.review_items = []
-    
-    if "lessons_completed" not in st.session_state:
-        st.session_state.lessons_completed = 0
-    
     if not st.session_state.username:
         st.title("Willkommen beim Deutsch Lernspiel!")
         username = st.text_input("Geben Sie Ihren Benutzernamen ein, um zu beginnen:")
         if username:
             st.session_state.username = username
-            st.session_state.score = 0
-            st.session_state.streak = 0
-            st.session_state.lessons_completed = 0
+            if load_progress(username):
+                st.success("Willkommen zurück! Ihr Fortschritt wurde geladen.")
+            else:
+                st.session_state.score = 0
+                st.session_state.streak = 0
+                st.session_state.lessons_completed = 0
+                st.session_state.current_lesson = None
+                st.session_state.question_index = 0
             st.experimental_rerun()
         return
 
@@ -168,7 +187,7 @@ def main():
     # Sidebar for lesson selection and stats
     with st.sidebar:
         st.title(f"Willkommen, {st.session_state.username}!")
-        lesson_id = st.selectbox("Wählen Sie eine Lektion:", list(lessons.keys()))
+        lesson_id = st.selectbox("Wählen Sie eine Lektion:", list(lessons.keys()), index=list(lessons.keys()).index(st.session_state.current_lesson) if st.session_state.current_lesson else 0)
         st.metric("Punktzahl", st.session_state.score)
         st.metric("Serie", st.session_state.streak)
         st.metric("Abgeschlossene Lektionen", st.session_state.lessons_completed)
@@ -181,16 +200,18 @@ def main():
             st.session_state.reset_input = True
             st.session_state.colored_answer = None
             st.session_state.review_items = []
+            save_progress(st.session_state.username)
             st.experimental_rerun()
 
     # Display achievements
     display_achievements(achievements)
 
     current_lesson = lessons[lesson_id]
+    st.session_state.current_lesson = lesson_id
 
     # Initialize session state
-    if "question_index" not in st.session_state:
-        st.session_state.question_index = 0
+    if "review_items" not in st.session_state:
+        st.session_state.review_items = []
     if "feedback" not in st.session_state:
         st.session_state.feedback = ""
     if "attempts" not in st.session_state:
@@ -236,6 +257,7 @@ def main():
                 st.success(st.session_state.feedback)
                 time.sleep(1)  # Wait for 1 second
                 next_question()
+                save_progress(st.session_state.username)  # Save progress after each correct answer
                 st.experimental_rerun()
             else:
                 st.warning(st.session_state.feedback)
@@ -244,6 +266,7 @@ def main():
         
         if st.session_state.move_to_next:
             next_question()
+            save_progress(st.session_state.username)  # Save progress after moving to next question
             st.experimental_rerun()
 
     else:
@@ -253,6 +276,7 @@ def main():
         
         # Increment completed lessons
         st.session_state.lessons_completed += 1
+        save_progress(st.session_state.username)  # Save progress after completing a lesson
         
         # Check for new achievements
         new_achievements = check_achievements(achievements)
@@ -273,7 +297,6 @@ def main():
                     text_to_speech(item['correct_answer'], lang='de')
         
         if st.button("Nochmal spielen"):
-            save_progress(st.session_state.username, lesson_id, st.session_state.score)
             st.session_state.question_index = 0
             st.session_state.feedback = ""
             st.session_state.attempts = 0
@@ -282,6 +305,7 @@ def main():
             st.session_state.reset_input = True
             st.session_state.colored_answer = None
             st.session_state.review_items = []
+            save_progress(st.session_state.username)
             st.experimental_rerun()
 
     # Fun facts or tips
