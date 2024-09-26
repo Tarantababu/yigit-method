@@ -195,12 +195,8 @@ def load_lessons():
         st.error("lessons.json file not found. Please make sure it exists in the same directory as the script.")
         built_in_lessons = {}
     
-    # Load custom lessons
-    try:
-        with open("custom_lessons.json", "r") as f:
-            custom_lessons = json.load(f)
-    except FileNotFoundError:
-        custom_lessons = {}
+    # Load custom lessons from session state
+    custom_lessons = st.session_state.get('custom_lessons', {})
     
     # Combine built-in and custom lessons
     all_lessons = {}
@@ -210,16 +206,10 @@ def load_lessons():
     return all_lessons, built_in_lessons, custom_lessons
 
 def save_custom_lesson(lesson_name, questions):
-    try:
-        with open("custom_lessons.json", "r") as f:
-            custom_lessons = json.load(f)
-    except FileNotFoundError:
-        custom_lessons = {}
+    if 'custom_lessons' not in st.session_state:
+        st.session_state.custom_lessons = {}
     
-    custom_lessons[lesson_name] = {"questions": questions}
-    
-    with open("custom_lessons.json", "w") as f:
-        json.dump(custom_lessons, f)
+    st.session_state.custom_lessons[lesson_name] = {"questions": questions}
 
 def custom_lesson_manager():
     st.header("Benutzerdefinierte Lektionen verwalten")
@@ -246,30 +236,44 @@ def custom_lesson_manager():
     
     # View and delete custom lessons
     st.subheader("Benutzerdefinierte Lektionen")
-    try:
-        with open("custom_lessons.json", "r") as f:
-            custom_lessons = json.load(f)
-        
-        if custom_lessons:
-            for lesson, content in custom_lessons.items():
-                st.write(f"Lektion: {lesson}")
-                if st.button(f"Löschen: {lesson}"):
-                    del custom_lessons[lesson]
-                    with open("custom_lessons.json", "w") as f:
-                        json.dump(custom_lessons, f)
-                    st.success(f"Lektion '{lesson}' wurde gelöscht!")
-                    lessons_changed = True
-                    st.experimental_rerun()
-        else:
-            st.info("Noch keine benutzerdefinierten Lektionen vorhanden.")
+    custom_lessons = st.session_state.get('custom_lessons', {})
     
-    except FileNotFoundError:
+    if custom_lessons:
+        for lesson, content in custom_lessons.items():
+            st.write(f"Lektion: {lesson}")
+            if st.button(f"Löschen: {lesson}"):
+                del st.session_state.custom_lessons[lesson]
+                st.success(f"Lektion '{lesson}' wurde gelöscht!")
+                lessons_changed = True
+                st.experimental_rerun()
+    else:
         st.info("Noch keine benutzerdefinierten Lektionen vorhanden.")
+    
+    # Download custom lessons as JSON
+    if custom_lessons:
+        st.download_button(
+            label="Benutzerdefinierte Lektionen herunterladen",
+            data=json.dumps(custom_lessons, indent=2),
+            file_name="custom_lessons.json",
+            mime="application/json"
+        )
+    
+    # Upload custom lessons
+    uploaded_file = st.file_uploader("Benutzerdefinierte Lektionen hochladen", type="json")
+    if uploaded_file is not None:
+        uploaded_lessons = json.load(uploaded_file)
+        st.session_state.custom_lessons.update(uploaded_lessons)
+        st.success("Benutzerdefinierte Lektionen wurden hochgeladen!")
+        lessons_changed = True
     
     return lessons_changed
 
 def main():
     st.set_page_config(layout="wide", page_title="Deutsch Lernspiel")
+    
+    # Initialize custom_lessons in session state if not present
+    if 'custom_lessons' not in st.session_state:
+        st.session_state.custom_lessons = {}
     
     if "username" not in st.session_state:
         st.session_state.username = ""
@@ -348,7 +352,8 @@ def main():
                 save_progress(st.session_state.username)
                 save_achievements({})  # Reset achievements file
                 st.experimental_rerun()
-                # Display achievements
+
+        # Display achievements
         display_achievements(st.session_state.achievements)
 
         if st.session_state.current_lesson in all_lessons:
@@ -374,8 +379,11 @@ def main():
             st.title("Deutsch Lernspiel")
             
             # Progress bar
-            progress = st.session_state.question_index / len(current_lesson["questions"])
-            st.progress(progress)
+            if len(current_lesson["questions"]) > 0:
+                progress = st.session_state.question_index / len(current_lesson["questions"])
+                st.progress(progress)
+            else:
+                st.warning("Diese Lektion enthält keine Fragen.")
 
             # Get current question
             if st.session_state.question_index < len(current_lesson["questions"]):
