@@ -148,12 +148,15 @@ def check_achievements(achievements):
         new_achievements.append("Fleißiger Schüler")
 
     save_achievements(achievements)
-    return new_achievements
+    return new_achievements, achievements
 
 def display_achievements(achievements):
     st.sidebar.subheader("Errungenschaften")
-    for badge, description in achievements.items():
-        st.sidebar.success(f"🏆 {badge}: {description}")
+    if achievements:
+        for badge, description in achievements.items():
+            st.sidebar.success(f"🏆 {badge}: {description}")
+    else:
+        st.sidebar.info("Noch keine Errungenschaften freigeschaltet.")
 
 def main():
     st.set_page_config(layout="wide", page_title="Deutsch Lernspiel")
@@ -178,7 +181,8 @@ def main():
         return
 
     # Load achievements
-    achievements = load_achievements()
+    if "achievements" not in st.session_state:
+        st.session_state.achievements = load_achievements()
 
     # Load lessons data
     with open("lessons.json", "r") as f:
@@ -210,11 +214,13 @@ def main():
             st.session_state.colored_answer = None
             st.session_state.review_items = []
             st.session_state.current_lesson = list(lessons.keys())[0]  # Reset to first lesson
+            st.session_state.achievements = {}  # Reset achievements
             save_progress(st.session_state.username)
+            save_achievements({})  # Reset achievements file
             st.experimental_rerun()
 
     # Display achievements
-    display_achievements(achievements)
+    display_achievements(st.session_state.achievements)
 
     current_lesson = lessons[lesson_id]
     st.session_state.current_lesson = lesson_id
@@ -268,6 +274,12 @@ def main():
                 time.sleep(1)  # Wait for 1 second
                 next_question()
                 save_progress(st.session_state.username)  # Save progress after each correct answer
+                
+                # Check for new achievements
+                new_achievements, st.session_state.achievements = check_achievements(st.session_state.achievements)
+                if new_achievements:
+                    st.success(f"Neue Errungenschaften freigeschaltet: {', '.join(new_achievements)}")
+                
                 st.experimental_rerun()
             else:
                 st.warning(st.session_state.feedback)
@@ -289,7 +301,7 @@ def main():
         save_progress(st.session_state.username)  # Save progress after completing a lesson
         
         # Check for new achievements
-        new_achievements = check_achievements(achievements)
+        new_achievements, st.session_state.achievements = check_achievements(st.session_state.achievements)
         if new_achievements:
             st.success(f"Neue Errungenschaften freigeschaltet: {', '.join(new_achievements)}")
         
