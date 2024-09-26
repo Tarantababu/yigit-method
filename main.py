@@ -216,6 +216,8 @@ def save_custom_lesson(lesson_name, questions):
 def custom_lesson_manager():
     st.header("Benutzerdefinierte Lektionen verwalten")
     
+    lessons_changed = False
+    
     # Create new lesson
     st.subheader("Neue Lektion erstellen")
     lesson_name = st.text_input("Lektionsname")
@@ -232,6 +234,7 @@ def custom_lesson_manager():
         if questions and st.button("Lektion speichern"):
             save_custom_lesson(lesson_name, questions)
             st.success(f"Lektion '{lesson_name}' wurde gespeichert!")
+            lessons_changed = True
     
     # View and delete custom lessons
     st.subheader("Benutzerdefinierte Lektionen")
@@ -246,10 +249,13 @@ def custom_lesson_manager():
                 with open("custom_lessons.json", "w") as f:
                     json.dump(custom_lessons, f)
                 st.success(f"Lektion '{lesson}' wurde gelöscht!")
+                lessons_changed = True
                 st.experimental_rerun()
     
     except FileNotFoundError:
         st.info("Noch keine benutzerdefinierten Lektionen vorhanden.")
+    
+    return lessons_changed
 
 def main():
     st.set_page_config(layout="wide", page_title="Deutsch Lernspiel")
@@ -352,7 +358,8 @@ def main():
             st.header(question["prompt"])
             
             st.session_state.correct_answer = question["answer"]
-        # Text-to-speech button
+            
+            # Text-to-speech button
             if st.button("Hören Sie die Antwort"):
                 text_to_speech(question["answer"], lang='de')
             
@@ -439,7 +446,9 @@ def main():
                 st.experimental_rerun()
 
     elif page == "Benutzerdefinierte Lektionen":
-        custom_lesson_manager()
+        lessons_changed = custom_lesson_manager()
+        if lessons_changed:
+            st.experimental_rerun()
 
     # Fun facts or tips
     if random.random() < 0.3:  # 30% chance to show a tip
