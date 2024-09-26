@@ -34,7 +34,7 @@ def get_next_word(correct_answer, user_answer):
             return word
     return ""
 
-def text_to_speech(text, lang='en'):
+def text_to_speech(text, lang='de'):
     tts = gTTS(text=text, lang=lang, slow=False)
     filename = f"temp_audio_{hash(text)}.mp3"
     tts.save(filename)
@@ -49,7 +49,7 @@ def check_answer():
     user_answer = st.session_state.get('user_input', '')
     correct_answer = st.session_state.correct_answer
     if clean_text(user_answer) == clean_text(correct_answer):
-        st.session_state.feedback = "🎉 Correct! Moving to next question..."
+        st.session_state.feedback = "🎉 Richtig! Weiter zur nächsten Frage..."
         st.session_state.score += 10
         st.session_state.streak += 1
         st.session_state.answer_correct = True
@@ -63,7 +63,7 @@ def check_answer():
         })
     else:
         next_word = get_next_word(correct_answer, user_answer)
-        st.session_state.feedback = f"Not quite. Try again! Hint: {next_word}"
+        st.session_state.feedback = f"Nicht ganz. Versuchen Sie es nochmal! Tipp: {next_word}"
         st.session_state.streak = 0
         st.session_state.answer_correct = False
         st.session_state.colored_answer = get_colored_answer(user_answer, correct_answer)
@@ -85,7 +85,7 @@ def next_question():
     st.session_state.colored_answer = None
 
 def main():
-    st.set_page_config(layout="wide", page_title="Language Learning Game")
+    st.set_page_config(layout="wide", page_title="Deutsch Lernspiel")
     
     if "username" not in st.session_state:
         st.session_state.username = ""
@@ -94,8 +94,8 @@ def main():
         st.session_state.review_items = []
     
     if not st.session_state.username:
-        st.title("Welcome to the Language Learning Game!")
-        username = st.text_input("Enter your username to start:")
+        st.title("Willkommen beim Deutsch Lernspiel!")
+        username = st.text_input("Geben Sie Ihren Benutzernamen ein, um zu beginnen:")
         if username:
             st.session_state.username = username
             st.session_state.score = 0
@@ -109,11 +109,11 @@ def main():
 
     # Sidebar for lesson selection and stats
     with st.sidebar:
-        st.title(f"Welcome, {st.session_state.username}!")
-        lesson_id = st.selectbox("Select a lesson:", list(lessons.keys()))
-        st.metric("Score", st.session_state.score)
-        st.metric("Streak", st.session_state.streak)
-        if st.button("Reset Progress"):
+        st.title(f"Willkommen, {st.session_state.username}!")
+        lesson_id = st.selectbox("Wählen Sie eine Lektion:", list(lessons.keys()))
+        st.metric("Punktzahl", st.session_state.score)
+        st.metric("Serie", st.session_state.streak)
+        if st.button("Fortschritt zurücksetzen"):
             st.session_state.score = 0
             st.session_state.streak = 0
             st.session_state.question_index = 0
@@ -143,7 +143,7 @@ def main():
         st.session_state.colored_answer = None
 
     # Main game area
-    st.title("Language Learning Game")
+    st.title("Deutsch Lernspiel")
     
     # Progress bar
     progress = st.session_state.question_index / len(current_lesson["questions"])
@@ -159,18 +159,18 @@ def main():
         st.session_state.correct_answer = question["answer"]
         
         # Text-to-speech button
-        if st.button("Listen to the answer"):
-            text_to_speech(question["answer"], lang=current_lesson.get("language", "en"))
+        if st.button("Hören Sie die Antwort"):
+            text_to_speech(question["answer"], lang='de')
         
         # Reset input if flag is set
         if st.session_state.reset_input:
             st.session_state.user_input = ""
             st.session_state.reset_input = False
         
-        user_input = st.text_input("Your answer:", key="user_input", on_change=check_answer)
+        user_input = st.text_input("Ihre Antwort:", key="user_input", on_change=check_answer)
         
         if st.session_state.feedback:
-            if "Correct" in st.session_state.feedback:
+            if "Richtig" in st.session_state.feedback:
                 st.success(st.session_state.feedback)
                 time.sleep(1)  # Wait for 1 second
                 next_question()
@@ -178,7 +178,7 @@ def main():
             else:
                 st.warning(st.session_state.feedback)
                 if st.session_state.colored_answer:
-                    st.markdown(f"Your answer so far: {st.session_state.colored_answer}", unsafe_allow_html=True)
+                    st.markdown(f"Ihre Antwort bisher: {st.session_state.colored_answer}", unsafe_allow_html=True)
         
         if st.session_state.move_to_next:
             next_question()
@@ -186,23 +186,23 @@ def main():
 
     else:
         st.balloons()
-        st.success("🎉 Congratulations! You've completed all questions in this lesson.")
-        st.write(f"Your final score: {st.session_state.score}")
+        st.success("🎉 Herzlichen Glückwunsch! Sie haben alle Fragen in dieser Lektion beantwortet.")
+        st.write(f"Ihre Endpunktzahl: {st.session_state.score}")
         
         # Review mode
-        st.subheader("Review Mode")
+        st.subheader("Überprüfungsmodus")
         for i, item in enumerate(st.session_state.review_items):
-            with st.expander(f"Question {i+1}: {item['question']}"):
-                st.write(f"Correct answer: {item['correct_answer']}")
-                st.write(f"Your answer: {item['user_answer']}")
+            with st.expander(f"Frage {i+1}: {item['question']}"):
+                st.write(f"Richtige Antwort: {item['correct_answer']}")
+                st.write(f"Ihre Antwort: {item['user_answer']}")
                 if item['is_correct']:
-                    st.success("Correct!")
+                    st.success("Richtig!")
                 else:
-                    st.error("Incorrect")
-                if st.button(f"Listen to correct answer (Q{i+1})", key=f"listen_{i}"):
-                    text_to_speech(item['correct_answer'], lang=current_lesson.get("language", "en"))
+                    st.error("Falsch")
+                if st.button(f"Hören Sie die richtige Antwort (F{i+1})", key=f"listen_{i}"):
+                    text_to_speech(item['correct_answer'], lang='de')
         
-        if st.button("Play Again"):
+        if st.button("Nochmal spielen"):
             save_progress(st.session_state.username, lesson_id, st.session_state.score)
             st.session_state.question_index = 0
             st.session_state.feedback = ""
@@ -216,7 +216,7 @@ def main():
 
     # Fun facts or tips
     if random.random() < 0.3:  # 30% chance to show a tip
-        st.sidebar.info("💡 Tip: Practice regularly to improve your language skills!")
+        st.sidebar.info("💡 Tipp: Üben Sie regelmäßig, um Ihre Deutschkenntnisse zu verbessern!")
 
 if __name__ == "__main__":
     main()
