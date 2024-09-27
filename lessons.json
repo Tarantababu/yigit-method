@@ -808,7 +808,7 @@
         "answer": "Eine gesunde Ernährung ist wichtig, wenn man lange leben will. "
       },
       {
-        "prompt": "A horse walks into a bar, and the bartender asks.  "Why the long face?".",
+        "prompt": "A horse walks into a bar, and the bartender asks.  -Why the long face?.",
         "answer": "Kommt ein Pferd in eine Bar, sagt der Barkeeper -Was ziehst du so ein langes Gesicht?"
       },
       {
@@ -850,7 +850,7 @@
       {
         "prompt": "After the first half, our team leads 2-0.",
         "answer": "Nach der ersten Halbzeit führt unsere Mannschaft 2 zu 0."
-      },
+      }
     ]
   } 
 }
