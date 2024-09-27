@@ -794,7 +794,63 @@
       {
         "prompt": "A bottle of  mineral water and two glasses please.",
         "answer": "Eine Flasche Mineralwasser mit zwei Gläsern bitte."
-      }
+      },
+      {
+        "prompt": "A family with three children lives next door.",
+        "answer": "Nebenan wohnt eine Familie mit drei Kindern."
+      },
+      {
+        "prompt": "A friend of mine is a chef at a fancy restaurant.",
+        "answer": "Einer meiner Freunde ist Koch in einem schicken Restaurant."
+      },
+      {
+        "prompt": "A healthy diet is important if you want to live a long time.",
+        "answer": "Eine gesunde Ernährung ist wichtig, wenn man lange leben will. "
+      },
+      {
+        "prompt": "A horse walks into a bar, and the bartender asks.  "Why the long face?".",
+        "answer": "Kommt ein Pferd in eine Bar, sagt der Barkeeper "Was ziehst du so ein langes Gesicht?""
+      },
+      {
+        "prompt": "A little exercise is healthy, but you should  not overdo it.",
+        "answer": "Ein bisschen Sport ist ja gesund , aber man soll es nicht übertreiben"
+      },
+      {
+        "prompt": "A mechanic is fixing my car.",
+        "answer": "Ein Mechaniker repariert mein Auto."
+      },
+      {
+        "prompt": "A new shopping center is being built here.",
+        "answer": "Hier wird ein neues Einkaufszentrum gebaut."
+      },
+      {
+        "prompt": "A picture of my children is hanging above my desk.",
+        "answer": "Über meinem Schreibtisch hängt ein Bild von meinen Kindern."
+      },
+      {
+        "prompt": "A recent study shows that pollution is still increasing.",
+        "answer": "Einer aktuellen Studie zufolge nimmt die Umweltverschmutzung zu."
+      },
+      {
+        "prompt": "A small band player at our wedding.",
+        "answer": "Auf unserer Hochzeit spielte eine kleine Band."
+      },
+      {
+        "prompt": "According to the weather forecast, it will rain tomorrow.",
+        "answer": "Laut der Wettervorhersage wird es morgen regnen."
+      },
+      {
+        "prompt": "Addiction to opioidis is a big problem.",
+        "answer": "Opioidabhängigkeit ist ein großes Problem."
+      },
+      {
+        "prompt": "Adults must pay, but admission is free for kids.",
+        "answer": "Erwachsene müssen zahlen, doch Kinder haben freien Eintritt."
+      },
+      {
+        "prompt": "After the first half, our team leads 2-0.",
+        "answer": "Nach der ersten Halbzeit führt unsere Mannschaft 2 zu 0."
+      },
     ]
   } 
 }
