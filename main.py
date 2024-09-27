@@ -50,16 +50,21 @@ def initialize_session_state():
     if "current_question_index" not in st.session_state:
         st.session_state.current_question_index = None
 
+def datetime_to_str(obj):
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    raise TypeError(f'Object of type {obj.__class__.__name__} is not JSON serializable')
+
 def save_progress(username):
     progress = {
         "score": st.session_state.score,
         "streak": st.session_state.streak,
         "lessons_completed": st.session_state.lessons_completed,
         "question_history": st.session_state.question_history,
-        "timestamp": str(datetime.now())
+        "timestamp": datetime.now().isoformat()
     }
     with open(f"{username}_progress.json", "w") as f:
-        json.dump(progress, f)
+        json.dump(progress, f, default=datetime_to_str)
 
 def load_progress(username):
     try:
@@ -71,6 +76,12 @@ def load_progress(username):
         st.session_state.streak = progress.get("streak", 0)
         st.session_state.lessons_completed = progress.get("lessons_completed", 0)
         st.session_state.question_history = progress.get("question_history", {})
+        
+        # Convert string dates back to datetime objects
+        for lesson in st.session_state.question_history.values():
+            for question in lesson.values():
+                if question['last_seen']:
+                    question['last_seen'] = datetime.fromisoformat(question['last_seen'])
         
         return True
     except FileNotFoundError:
