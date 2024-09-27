@@ -7,6 +7,10 @@ import time
 from gtts import gTTS
 import os
 import base64
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.lib.units import cm
 
 # Try to import speech_recognition, but don't fail if it's not available
 try:
@@ -281,6 +285,59 @@ def custom_lesson_manager():
     
     return lessons_changed
 
+def export_lessons_as_pdf(lessons, filename="flashcards.pdf"):
+    doc = SimpleDocTemplate(filename, pagesize=A4, rightMargin=1*cm, leftMargin=1*cm, topMargin=1*cm, bottomMargin=1*cm)
+    elements = []
+
+    for lesson_name, lesson in lessons.items():
+        # Add lesson name
+        elements.append(Table([[lesson_name]], colWidths=[19*cm], rowHeights=[1*cm]))
+        elements[-1].setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,-1), colors.grey),
+            ('TEXTCOLOR', (0,0), (-1,-1), colors.whitesmoke),
+            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+            ('FONTNAME', (0,0), (-1,-1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0,0), (-1,-1), 14),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 12),
+            ('TOPPADDING', (0,0), (-1,-1), 12),
+        ]))
+
+        # Add questions and answers
+        for question in lesson['questions']:
+            # Question card
+            question_table = Table([[question['prompt']]], colWidths=[9*cm], rowHeights=[6*cm])
+            question_table.setStyle(TableStyle([
+                ('BACKGROUND', (0,0), (-1,-1), colors.beige),
+                ('TEXTCOLOR', (0,0), (-1,-1), colors.black),
+                ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('FONTNAME', (0,0), (-1,-1), 'Helvetica'),
+                ('FONTSIZE', (0,0), (-1,-1), 12),
+                ('TOPPADDING', (0,0), (-1,-1), 6),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+                ('BOX', (0,0), (-1,-1), 1, colors.black),
+            ]))
+
+            # Answer card
+            answer_table = Table([[question['answer']]], colWidths=[9*cm], rowHeights=[6*cm])
+            answer_table.setStyle(TableStyle([
+                ('BACKGROUND', (0,0), (-1,-1), colors.lightgreen),
+                ('TEXTCOLOR', (0,0), (-1,-1), colors.black),
+                ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('FONTNAME', (0,0), (-1,-1), 'Helvetica'),
+                ('FONTSIZE', (0,0), (-1,-1), 12),
+                ('TOPPADDING', (0,0), (-1,-1), 6),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+                ('BOX', (0,0), (-1,-1), 1, colors.black),
+            ]))
+
+            # Add question and answer cards side by side
+            elements.append(Table([[question_table, answer_table]], colWidths=[9.5*cm, 9.5*cm], rowHeights=[6.5*cm]))
+
+    doc.build(elements)
+    return filename
+
 def main():
     st.set_page_config(layout="wide", page_title="Deutsch Lernspiel")
     
@@ -332,6 +389,19 @@ def main():
         page = st.radio("Navigation", ["Lernspiel", "Benutzerdefinierte Lektionen"])
     else:
         page = st.sidebar.radio("Navigation", ["Lernspiel", "Benutzerdefinierte Lektionen"])
+
+    # Add PDF export button
+    all_lessons, _, _ = load_lessons()
+    if st.button("Alle Lektionen als PDF exportieren"):
+        pdf_file = export_lessons_as_pdf(all_lessons)
+        with open(pdf_file, "rb") as f:
+            bytes_data = f.read()
+        st.download_button(
+            label="PDF herunterladen",
+            data=bytes_data,
+            file_name="flashcards.pdf",
+            mime="application/pdf"
+        )
 
     if page == "Lernspiel":
         # Load lessons data
