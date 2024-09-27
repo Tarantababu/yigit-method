@@ -783,5 +783,17 @@
         "answer": "Ich genieße ein warmes Getränk. Was ist Ihr Lieblingsgetränk?"
       }
     ]
-  }
+  },
+  "Kindergarten": {
+    "title": "1000 Sentences",
+    "questions": [
+      {
+        "prompt": "A big wedding with many people is our tradition.",
+        "answer": "Große Hocheiten mit vielen Gästen sind bei uns Tradition."
+      },
+      {
+        "prompt": "A bottle of  mineral water and two glasses please.",
+        "answer": "Eine Flasche Mineralwasser mit zwei Gläsern bitte."
+      }
+    ]
 }
