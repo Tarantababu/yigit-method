@@ -305,6 +305,8 @@ def initialize_question_history(lessons):
                     'interval': 1,
                     'attempts': []
                 }
+            elif 'attempts' not in st.session_state.question_history[lesson_name][i]:
+                st.session_state.question_history[lesson_name][i]['attempts'] = []
 
 def get_next_review_date(history):
     if history['last_seen'] is None:
@@ -315,6 +317,8 @@ def update_question_history(lesson_name, question_index, correct, attempt_count)
     history = st.session_state.question_history[lesson_name][question_index]
     history['last_seen'] = datetime.now()
     history['total_count'] += 1
+    if 'attempts' not in history:
+        history['attempts'] = []
     history['attempts'].append(attempt_count)
     if correct:
         history['correct_count'] += 1
@@ -352,7 +356,7 @@ def display_spaced_repetition_stats():
         for question in lesson.values():
             total_questions += 1
             total_correct += question['correct_count']
-            total_attempts += sum(question['attempts'])
+            total_attempts += sum(question.get('attempts', []))
     
     if total_questions > 0:
         accuracy = (total_correct / total_questions) * 100
