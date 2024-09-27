@@ -1,5 +1,4 @@
 streamlit==1.22.0
 gTTS==2.3.1
-SpeechRecognition==3.10.0; platform_system != "Linux"
-pyaudio==0.2.13; platform_system != "Linux"
+SpeechRecognition==3.10.0
 reportlab==3.6.12
