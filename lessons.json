@@ -850,6 +850,42 @@
       {
         "prompt": "After the first half, our team leads 2-0.",
         "answer": "Nach der ersten Halbzeit führt unsere Mannschaft 2 zu 0."
+      },
+      {
+        "prompt": "After the meal there was a delicious dessert.",
+        "answer": "Nach dem Essen gab es ein leckeres Dessert."
+      },
+      {
+        "prompt": "After we ate, we went for a walk.",
+        "answer": "Nach dem Essen gingen wir spazieren. "
+      },
+      {
+        "prompt": "Ahmed came here to study English.",
+        "answer": "Ahmed ist hierhergekommen, um Englisch zu studieren."
+      },
+      {
+        "prompt": "All group members were present at the meeting.",
+        "answer": "Alle Gruppenmitglieder waren bei der Sitzung anwesend."
+      },
+      {
+        "prompt": "All the protests achieved nothing.",
+        "answer": "Die ganzen Proteste haben nichts bewirkt."
+      },
+      {
+        "prompt": "Always go to other people's funerals, otherwise they won't come to yours.",
+        "answer": "Wenn man nicht zur Beerdigung anderer Leute geht, werden sie auch nicht zur eigenen kommen."
+      },
+      {
+        "prompt": "Anything else? -No, that's all.",
+        "answer": "Sonst noch was?  Nein, das ist alles."
+      },
+      {
+        "prompt": "Are there any leftovers from dinner?",
+        "answer": "Ist vom Abendessen noch was übrig?"
+      },
+      {
+        "prompt": "Are we going by bus or subway?",
+        "answer": "Nehmen wir den Bus oder die U-Bahn?"
       }
     ]
   } 
