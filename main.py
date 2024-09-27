@@ -5,7 +5,6 @@ import re
 import random
 import time
 from gtts import gTTS
-import os
 import base64
 
 # Try to import speech_recognition, but don't fail if it's not available
@@ -77,26 +76,22 @@ def get_next_word(correct_answer, user_answer):
 
 def text_to_speech(text, lang='de'):
     tts = gTTS(text=text, lang=lang, slow=False)
-    filename = f"temp_audio_{hash(text)}.mp3"
-    tts.save(filename)
-    with open(filename, "rb") as f:
-        audio_bytes = f.read()
-    os.remove(filename)
+    audio_bytes = tts.get_audio_content()
     audio_base64 = base64.b64encode(audio_bytes).decode()
     
-    # Create a download link for the audio
-    st.markdown(
-        f'<a href="data:audio/mp3;base64,{audio_base64}" download="audio.mp3">Audio herunterladen</a>',
-        unsafe_allow_html=True
-    )
-    
-    # Add a play button that will work on both desktop and mobile
-    st.markdown(f"""
-    <audio id="audio" style="display:none">
-        <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
-    </audio>
-    <button onclick="document.getElementById('audio').play()">Abspielen</button>
-    """, unsafe_allow_html=True)
+    audio_html = f"""
+        <audio id="audio" style="display:none">
+            <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
+        </audio>
+        <button onclick="playAudio()">Abspielen</button>
+        <script>
+        function playAudio() {{
+            var audio = document.getElementById('audio');
+            audio.play();
+        }}
+        </script>
+    """
+    st.markdown(audio_html, unsafe_allow_html=True)
 
 def voice_to_text():
     if not speech_recognition_available:
@@ -495,11 +490,12 @@ def main():
                 
                 st.session_state.correct_answer = question["answer"]
                 
+                # Audio playback button
+                st.write("Hören Sie die Antwort:")
+                text_to_speech(question["answer"], lang='de')
+                
                 # Adjust UI elements for mobile
                 if is_mobile:
-                    if st.button("Hören Sie die Antwort"):
-                        text_to_speech(question["answer"], lang='de')
-                    
                     if speech_recognition_available:
                         input_method = st.radio("Antwortmethode", ("Text", "Stimme"))
                     else:
@@ -514,10 +510,6 @@ def main():
                             st.write(f"Erkannte Antwort: {user_input}")
                             check_answer()
                 else:
-                    # Text-to-speech button
-                    if st.button("Hören Sie die Antwort"):
-                        text_to_speech(question["answer"], lang='de')
-                    
                     # Reset input if flag is set
                     if st.session_state.reset_input:
                         st.session_state.user_input = ""
@@ -585,8 +577,8 @@ def main():
                             st.success("Richtig!")
                         else:
                             st.error("Falsch")
-                        if st.button(f"Hören Sie die richtige Antwort (F{i+1})", key=f"listen_{i}"):
-                            text_to_speech(item['correct_answer'], lang='de')
+                        st.write("Hören Sie die richtige Antwort:")
+                        text_to_speech(item['correct_answer'], lang='de')
                 
                 if st.button("Nochmal spielen"):
                     st.session_state.question_index = 0
