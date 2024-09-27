@@ -8,9 +8,10 @@ from gtts import gTTS
 import os
 import base64
 
-# Try to import speech_recognition, but don't fail if it's not available
+# Try to import speech_recognition and pyaudio, but don't fail if they're not available
 try:
     import speech_recognition as sr
+    import pyaudio
     speech_recognition_available = True
 except ImportError:
     speech_recognition_available = False
@@ -88,16 +89,16 @@ def text_to_speech(text, lang='de'):
 
 def voice_to_text():
     if not speech_recognition_available:
-        st.error("Spracherkennung ist nicht verfügbar. Bitte installieren Sie das 'SpeechRecognition' Paket.")
+        st.error("Spracherkennung ist nicht verfügbar. Bitte installieren Sie die benötigten Pakete (SpeechRecognition und PyAudio).")
         return ""
 
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.write("Sprechen Sie jetzt...")
-        audio = r.listen(source)
-        st.write("Spracherkennung läuft...")
-    
     try:
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            st.write("Sprechen Sie jetzt...")
+            audio = r.listen(source)
+            st.write("Spracherkennung läuft...")
+    
         text = r.recognize_google(audio, language="de-DE")
         return text
     except sr.UnknownValueError:
@@ -105,6 +106,9 @@ def voice_to_text():
         return ""
     except sr.RequestError as e:
         st.error(f"Konnte keine Ergebnisse vom Google Speech Recognition service abrufen; {e}")
+        return ""
+    except Exception as e:
+        st.error(f"Ein Fehler ist aufgetreten: {str(e)}")
         return ""
 
 def check_answer():
@@ -421,15 +425,17 @@ def main():
                     input_method = st.radio("Wie möchten Sie antworten?", ("Text", "Stimme"))
                 else:
                     input_method = "Text"
+                    st.warning("Spracherkennung ist nicht verfügbar. Bitte verwenden Sie die Texteingabe.")
                 
                 if input_method == "Text":
                     user_input = st.text_input("Ihre Antwort:", key="user_input", on_change=check_answer)
                 else:
                     if st.button("Klicken Sie hier, um zu sprechen"):
                         user_input = voice_to_text()
-                        st.session_state.user_input = user_input
-                        st.write(f"Erkannte Antwort: {user_input}")
-                        check_answer()
+                        if user_input:
+                            st.session_state.user_input = user_input
+                            st.write(f"Erkannte Antwort: {user_input}")
+                            check_answer()
                 
                 if st.session_state.feedback:
                     if "Richtig" in st.session_state.feedback:
