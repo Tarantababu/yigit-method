@@ -150,7 +150,7 @@ def voice_to_text():
         return ""
 
 def check_answer():
-    user_answer = st.session_state.get('user_input', '')
+    user_answer = st.session_state.user_input
     correct_answer = st.session_state.correct_answer
     if clean_text(user_answer) == clean_text(correct_answer):
         st.session_state.feedback = "🎉 Richtig!"
@@ -463,10 +463,15 @@ def main():
                 st.warning("Spracherkennung ist nicht verfügbar. Bitte verwenden Sie die Texteingabe.")
             
             if input_method == "Text":
-                if st.session_state.clear_input:
-                    st.session_state.user_input = ""
-                    st.session_state.clear_input = False
-                user_input = st.text_input("Ihre Antwort:", key="user_input", value=st.session_state.user_input, on_change=check_answer)
+                with st.form(key='answer_form'):
+                    if st.session_state.clear_input:
+                        st.session_state.user_input = ""
+                        st.session_state.clear_input = False
+                    user_input = st.text_input("Ihre Antwort:", key="user_input", value=st.session_state.user_input)
+                    submit_button = st.form_submit_button(label='Antwort überprüfen', on_click=check_answer)
+
+                if submit_button:
+                    st.experimental_rerun()
             else:
                 if st.button("Klicken Sie hier, um zu sprechen"):
                     user_input = voice_to_text()
@@ -474,6 +479,7 @@ def main():
                         st.session_state.user_input = user_input
                         st.write(f"Erkannte Antwort: {user_input}")
                         check_answer()
+                        st.experimental_rerun()
             
             if st.session_state.feedback:
                 if "Richtig" in st.session_state.feedback:
