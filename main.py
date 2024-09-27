@@ -414,6 +414,7 @@ def main():
             if selected_lesson != st.session_state.current_lesson:
                 st.session_state.current_lesson = selected_lesson
                 st.session_state.current_question_index = None
+                st.session_state.user_input = ""  # Clear input when changing lessons
                 st.experimental_rerun()
 
             if st.button("Fortschritt zurücksetzen"):
@@ -437,6 +438,7 @@ def main():
             current_lesson = all_lessons[st.session_state.current_lesson]
             if st.session_state.current_question_index is None:
                 st.session_state.current_question_index = get_next_question(st.session_state.current_lesson, current_lesson)
+                st.session_state.user_input = ""  # Clear input when a new question is selected
             
             question = current_lesson["questions"][st.session_state.current_question_index]
             st.session_state.current_question = question
@@ -456,7 +458,7 @@ def main():
                 st.warning("Spracherkennung ist nicht verfügbar. Bitte verwenden Sie die Texteingabe.")
             
             if input_method == "Text":
-                user_input = st.text_input("Ihre Antwort:", key="user_input", on_change=check_answer)
+                user_input = st.text_input("Ihre Antwort:", key="user_input", value=st.session_state.user_input, on_change=check_answer)
             else:
                 if st.button("Klicken Sie hier, um zu sprechen"):
                     user_input = voice_to_text()
@@ -478,6 +480,7 @@ def main():
                     st.session_state.feedback = ""
                     st.session_state.attempts = 0
                     st.session_state.current_question_index = None
+                    st.session_state.user_input = ""  # Clear input after correct answer
                     st.experimental_rerun()
                 else:
                     st.warning(st.session_state.feedback)
@@ -488,6 +491,7 @@ def main():
                 update_question_history(st.session_state.current_lesson, st.session_state.current_question_index, False, st.session_state.attempts)
                 st.session_state.attempts = 0
                 st.session_state.current_question_index = None
+                st.session_state.user_input = ""  # Clear input when moving to next question
                 st.experimental_rerun()
 
         else:
