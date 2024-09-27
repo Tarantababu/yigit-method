@@ -31,13 +31,26 @@ def load_progress(username):
     try:
         with open(f"{username}_progress.json", "r") as f:
             progress = json.load(f)
-        st.session_state.score = progress["score"]
-        st.session_state.streak = progress["streak"]
-        st.session_state.lessons_completed = progress["lessons_completed"]
-        st.session_state.current_lesson = progress["current_lesson"]
-        st.session_state.question_index = progress["question_index"]
+        
+        # Initialize session state with loaded progress
+        st.session_state.score = progress.get("score", 0)
+        st.session_state.streak = progress.get("streak", 0)
+        st.session_state.lessons_completed = progress.get("lessons_completed", 0)
+        st.session_state.current_lesson = progress.get("current_lesson", None)
+        st.session_state.question_index = progress.get("question_index", 0)
+        
         return True
     except FileNotFoundError:
+        # Initialize default values for new users
+        st.session_state.score = 0
+        st.session_state.streak = 0
+        st.session_state.lessons_completed = 0
+        st.session_state.current_lesson = None
+        st.session_state.question_index = 0
+        
+        return False
+    except json.JSONDecodeError:
+        st.error(f"Error reading progress file for {username}. File may be corrupted.")
         return False
 
 def clean_text(text):
@@ -286,11 +299,7 @@ def main():
             if load_progress(username):
                 st.success("Willkommen zurück! Ihr Fortschritt wurde geladen.")
             else:
-                st.session_state.score = 0
-                st.session_state.streak = 0
-                st.session_state.lessons_completed = 0
-                st.session_state.current_lesson = None
-                st.session_state.question_index = 0
+                st.success(f"Willkommen, {username}! Ein neues Spiel wurde für Sie gestartet.")
             st.experimental_rerun()
         return
 
