@@ -16,6 +16,40 @@ try:
 except ImportError:
     speech_recognition_available = False
 
+def initialize_session_state():
+    if "username" not in st.session_state:
+        st.session_state.username = ""
+    if "score" not in st.session_state:
+        st.session_state.score = 0
+    if "streak" not in st.session_state:
+        st.session_state.streak = 0
+    if "lessons_completed" not in st.session_state:
+        st.session_state.lessons_completed = 0
+    if "question_history" not in st.session_state:
+        st.session_state.question_history = {}
+    if "achievements" not in st.session_state:
+        st.session_state.achievements = {}
+    if "custom_lessons" not in st.session_state:
+        st.session_state.custom_lessons = {}
+    if "feedback" not in st.session_state:
+        st.session_state.feedback = ""
+    if "answer_correct" not in st.session_state:
+        st.session_state.answer_correct = False
+    if "move_to_next" not in st.session_state:
+        st.session_state.move_to_next = False
+    if "reset_input" not in st.session_state:
+        st.session_state.reset_input = False
+    if "colored_answer" not in st.session_state:
+        st.session_state.colored_answer = None
+    if "current_question" not in st.session_state:
+        st.session_state.current_question = None
+    if "correct_answer" not in st.session_state:
+        st.session_state.correct_answer = ""
+    if "user_input" not in st.session_state:
+        st.session_state.user_input = ""
+    if "attempts" not in st.session_state:
+        st.session_state.attempts = 0
+
 def save_progress(username):
     progress = {
         "score": st.session_state.score,
@@ -40,12 +74,6 @@ def load_progress(username):
         
         return True
     except FileNotFoundError:
-        # Initialize default values for new users
-        st.session_state.score = 0
-        st.session_state.streak = 0
-        st.session_state.lessons_completed = 0
-        st.session_state.question_history = {}
-        
         return False
     except json.JSONDecodeError:
         st.error(f"Error reading progress file for {username}. File may be corrupted.")
@@ -321,12 +349,8 @@ def get_next_question(lessons):
 def main():
     st.set_page_config(layout="wide", page_title="Deutsch Lernspiel")
     
-    # Initialize custom_lessons in session state if not present
-    if 'custom_lessons' not in st.session_state:
-        st.session_state.custom_lessons = {}
-    
-    if "username" not in st.session_state:
-        st.session_state.username = ""
+    # Initialize all session state variables
+    initialize_session_state()
     
     if not st.session_state.username:
         st.title("Willkommen beim Deutsch Lernspiel!")
@@ -341,7 +365,7 @@ def main():
         return
 
     # Load achievements
-    if "achievements" not in st.session_state:
+    if not st.session_state.achievements:
         st.session_state.achievements = load_achievements()
 
     # Load lessons data
