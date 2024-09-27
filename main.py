@@ -6,6 +6,7 @@ import random
 import time
 from gtts import gTTS
 import base64
+import io
 
 # Try to import speech_recognition, but don't fail if it's not available
 try:
@@ -76,8 +77,9 @@ def get_next_word(correct_answer, user_answer):
 
 def text_to_speech(text, lang='de'):
     tts = gTTS(text=text, lang=lang, slow=False)
-    audio_bytes = tts.get_audio_content()
-    audio_base64 = base64.b64encode(audio_bytes).decode()
+    audio_bytes = io.BytesIO()
+    tts.write_to_fp(audio_bytes)
+    audio_base64 = base64.b64encode(audio_bytes.getvalue()).decode()
     
     audio_html = f"""
         <audio id="audio" style="display:none">
