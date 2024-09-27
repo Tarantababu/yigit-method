@@ -352,7 +352,8 @@ def main():
                 lesson_options.extend(list(built_in_lessons.keys()))
             if custom_lessons:
                 lesson_options.append("--- Benutzerdefinierte Lektionen ---")
-                if lesson_options:
+                lesson_options.extend(list(custom_lessons.keys()))
+            if lesson_options:
                 selected_lesson = st.selectbox(
                     "Wählen Sie eine Lektion:", 
                     lesson_options,
