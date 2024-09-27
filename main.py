@@ -35,10 +35,6 @@ def initialize_session_state():
         st.session_state.feedback = ""
     if "answer_correct" not in st.session_state:
         st.session_state.answer_correct = False
-    if "move_to_next" not in st.session_state:
-        st.session_state.move_to_next = False
-    if "reset_input" not in st.session_state:
-        st.session_state.reset_input = False
     if "colored_answer" not in st.session_state:
         st.session_state.colored_answer = None
     if "current_question" not in st.session_state:
@@ -51,6 +47,8 @@ def initialize_session_state():
         st.session_state.attempts = 0
     if "current_lesson" not in st.session_state:
         st.session_state.current_lesson = None
+    if "current_question_index" not in st.session_state:
+        st.session_state.current_question_index = None
 
 def save_progress(username):
     progress = {
@@ -142,11 +140,10 @@ def check_answer():
     user_answer = st.session_state.get('user_input', '')
     correct_answer = st.session_state.correct_answer
     if clean_text(user_answer) == clean_text(correct_answer):
-        st.session_state.feedback = "🎉 Richtig! Weiter zur nächsten Frage..."
+        st.session_state.feedback = "🎉 Richtig!"
         st.session_state.score += 10
         st.session_state.streak += 1
         st.session_state.answer_correct = True
-        st.session_state.move_to_next = True
         st.session_state.colored_answer = None
     else:
         next_word = get_next_word(correct_answer, user_answer)
@@ -305,7 +302,8 @@ def initialize_question_history(lessons):
                     'correct_count': 0,
                     'total_count': 0,
                     'easiness_factor': 2.5,
-                    'interval': 1
+                    'interval': 1,
+                    'attempts': []
                 }
 
 def get_next_review_date(history):
@@ -313,13 +311,14 @@ def get_next_review_date(history):
         return datetime.now()
     return history['last_seen'] + timedelta(days=history['interval'])
 
-def update_question_history(lesson_name, question_index, correct):
+def update_question_history(lesson_name, question_index, correct, attempt_count):
     history = st.session_state.question_history[lesson_name][question_index]
     history['last_seen'] = datetime.now()
     history['total_count'] += 1
+    history['attempts'].append(attempt_count)
     if correct:
         history['correct_count'] += 1
-        history['easiness_factor'] = max(1.3, history['easiness_factor'] + (0.1 - (5 - 5) * (0.08 + (5 - 5) * 0.02)))
+        history['easiness_factor'] = max(1.3, history['easiness_factor'] + (0.1 - (5 - attempt_count) * (0.08 + (5 - attempt_count) * 0.02)))
         if history['interval'] == 1:
             history['interval'] = 6
         elif history['interval'] == 6:
@@ -343,6 +342,23 @@ def get_next_question(lesson_name, lesson):
     else:
         # If no questions are due, choose a random question
         return random.randint(0, len(lesson['questions']) - 1)
+
+def display_spaced_repetition_stats():
+    st.sidebar.subheader("Spaced Repetition Statistiken")
+    total_questions = 0
+    total_correct = 0
+    total_attempts = 0
+    for lesson in st.session_state.question_history.values():
+        for question in lesson.values():
+            total_questions += 1
+            total_correct += question['correct_count']
+            total_attempts += sum(question['attempts'])
+    
+    if total_questions > 0:
+        accuracy = (total_correct / total_questions) * 100
+        avg_attempts = total_attempts / total_questions
+        st.sidebar.metric("Gesamtgenauigkeit", f"{accuracy:.2f}%")
+        st.sidebar.metric("Durchschnittliche Versuche pro Frage", f"{avg_attempts:.2f}")
 
 def main():
     st.set_page_config(layout="wide", page_title="Deutsch Lernspiel")
@@ -382,6 +398,7 @@ def main():
             selected_lesson = st.selectbox("Wählen Sie eine Lektion:", lesson_options)
             if selected_lesson != st.session_state.current_lesson:
                 st.session_state.current_lesson = selected_lesson
+                st.session_state.current_question_index = None
                 st.experimental_rerun()
 
             if st.button("Fortschritt zurücksetzen"):
@@ -395,14 +412,18 @@ def main():
                 save_achievements({})
                 st.experimental_rerun()
 
+            display_spaced_repetition_stats()
+
         display_achievements(st.session_state.achievements)
 
         st.title("Deutsch Lernspiel")
 
         if st.session_state.current_lesson:
             current_lesson = all_lessons[st.session_state.current_lesson]
-            question_index = get_next_question(st.session_state.current_lesson, current_lesson)
-            question = current_lesson["questions"][question_index]
+            if st.session_state.current_question_index is None:
+                st.session_state.current_question_index = get_next_question(st.session_state.current_lesson, current_lesson)
+            
+            question = current_lesson["questions"][st.session_state.current_question_index]
             st.session_state.current_question = question
             
             st.header(question["prompt"])
@@ -411,10 +432,6 @@ def main():
             # Text-to-speech button
             if st.button("Hören Sie die Antwort"):
                 text_to_speech(question["answer"], lang='de')
-            
-            if st.session_state.reset_input:
-                st.session_state.user_input = ""
-                st.session_state.reset_input = False
             
             # Voice input option
             if speech_recognition_available:
@@ -436,7 +453,7 @@ def main():
             if st.session_state.feedback:
                 if "Richtig" in st.session_state.feedback:
                     st.success(st.session_state.feedback)
-                    update_question_history(st.session_state.current_lesson, question_index, True)
+                    update_question_history(st.session_state.current_lesson, st.session_state.current_question_index, True, st.session_state.attempts)
                     save_progress(st.session_state.username)
                     
                     new_achievements, st.session_state.achievements = check_achievements(st.session_state.achievements)
@@ -444,13 +461,20 @@ def main():
                         st.success(f"Neue Errungenschaften freigeschaltet: {', '.join(new_achievements)}")
                     
                     st.session_state.feedback = ""
-                    st.session_state.reset_input = True
+                    st.session_state.attempts = 0
+                    st.session_state.current_question_index = None
                     st.experimental_rerun()
                 else:
                     st.warning(st.session_state.feedback)
-                    update_question_history(st.session_state.current_lesson, question_index, False)
                     if st.session_state.colored_answer:
                         st.markdown(f"Ihre Antwort bisher: {st.session_state.colored_answer}", unsafe_allow_html=True)
+            
+            if st.button("Nächste Frage"):
+                update_question_history(st.session_state.current_lesson, st.session_state.current_question_index, False, st.session_state.attempts)
+                st.session_state.attempts = 0
+                st.session_state.current_question_index = None
+                st.experimental_rerun()
+
         else:
             st.warning("Bitte wählen Sie eine Lektion aus.")
 
