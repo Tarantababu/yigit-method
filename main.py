@@ -7,10 +7,16 @@ import time
 from gtts import gTTS
 import os
 import base64
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-from reportlab.lib.units import cm
+
+# Try to import reportlab, but don't fail if it's not available
+try:
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+    from reportlab.lib.units import cm
+    pdf_export_available = True
+except ImportError:
+    pdf_export_available = False
 
 # Try to import speech_recognition, but don't fail if it's not available
 try:
@@ -286,6 +292,10 @@ def custom_lesson_manager():
     return lessons_changed
 
 def export_lessons_as_pdf(lessons, filename="flashcards.pdf"):
+    if not pdf_export_available:
+        st.error("PDF Export ist nicht verfügbar. Bitte installieren Sie 'reportlab'.")
+        return None
+
     doc = SimpleDocTemplate(filename, pagesize=A4, rightMargin=1*cm, leftMargin=1*cm, topMargin=1*cm, bottomMargin=1*cm)
     elements = []
 
@@ -390,18 +400,22 @@ def main():
     else:
         page = st.sidebar.radio("Navigation", ["Lernspiel", "Benutzerdefinierte Lektionen"])
 
-    # Add PDF export button
+    # Add PDF export button only if reportlab is available
     all_lessons, _, _ = load_lessons()
-    if st.button("Alle Lektionen als PDF exportieren"):
-        pdf_file = export_lessons_as_pdf(all_lessons)
-        with open(pdf_file, "rb") as f:
-            bytes_data = f.read()
-        st.download_button(
-            label="PDF herunterladen",
-            data=bytes_data,
-            file_name="flashcards.pdf",
-            mime="application/pdf"
-        )
+    if pdf_export_available:
+        if st.button("Alle Lektionen als PDF exportieren"):
+            pdf_file = export_lessons_as_pdf(all_lessons)
+            if pdf_file:
+                with open(pdf_file, "rb") as f:
+                    bytes_data = f.read()
+                st.download_button(
+                    label="PDF herunterladen",
+                    data=bytes_data,
+                    file_name="flashcards.pdf",
+                    mime="application/pdf"
+                )
+    else:
+        st.warning("PDF Export ist nicht verfügbar. Installieren Sie 'reportlab', um diese Funktion zu nutzen.")
 
     if page == "Lernspiel":
         # Load lessons data
