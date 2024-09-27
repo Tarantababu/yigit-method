@@ -1,6 +1,6 @@
 import streamlit as st
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 import re
 import random
 import time
@@ -16,57 +16,17 @@ try:
 except ImportError:
     speech_recognition_available = False
 
-def initialize_session_state():
-    if "username" not in st.session_state:
-        st.session_state.username = ""
-    if "score" not in st.session_state:
-        st.session_state.score = 0
-    if "streak" not in st.session_state:
-        st.session_state.streak = 0
-    if "lessons_completed" not in st.session_state:
-        st.session_state.lessons_completed = 0
-    if "question_history" not in st.session_state:
-        st.session_state.question_history = {}
-    if "achievements" not in st.session_state:
-        st.session_state.achievements = {}
-    if "custom_lessons" not in st.session_state:
-        st.session_state.custom_lessons = {}
-    if "feedback" not in st.session_state:
-        st.session_state.feedback = ""
-    if "answer_correct" not in st.session_state:
-        st.session_state.answer_correct = False
-    if "colored_answer" not in st.session_state:
-        st.session_state.colored_answer = None
-    if "current_question" not in st.session_state:
-        st.session_state.current_question = None
-    if "correct_answer" not in st.session_state:
-        st.session_state.correct_answer = ""
-    if "user_input" not in st.session_state:
-        st.session_state.user_input = ""
-    if "attempts" not in st.session_state:
-        st.session_state.attempts = 0
-    if "current_lesson" not in st.session_state:
-        st.session_state.current_lesson = None
-    if "current_question_index" not in st.session_state:
-        st.session_state.current_question_index = None
-    if "clear_input" not in st.session_state:
-        st.session_state.clear_input = False
-
-def datetime_to_str(obj):
-    if isinstance(obj, datetime):
-        return obj.isoformat()
-    raise TypeError(f'Object of type {obj.__class__.__name__} is not JSON serializable')
-
 def save_progress(username):
     progress = {
         "score": st.session_state.score,
         "streak": st.session_state.streak,
         "lessons_completed": st.session_state.lessons_completed,
-        "question_history": st.session_state.question_history,
-        "timestamp": datetime.now().isoformat()
+        "current_lesson": st.session_state.current_lesson,
+        "question_index": st.session_state.question_index,
+        "timestamp": str(datetime.now())
     }
     with open(f"{username}_progress.json", "w") as f:
-        json.dump(progress, f, default=datetime_to_str)
+        json.dump(progress, f)
 
 def load_progress(username):
     try:
@@ -77,16 +37,18 @@ def load_progress(username):
         st.session_state.score = progress.get("score", 0)
         st.session_state.streak = progress.get("streak", 0)
         st.session_state.lessons_completed = progress.get("lessons_completed", 0)
-        st.session_state.question_history = progress.get("question_history", {})
-        
-        # Convert string dates back to datetime objects
-        for lesson in st.session_state.question_history.values():
-            for question in lesson.values():
-                if question['last_seen']:
-                    question['last_seen'] = datetime.fromisoformat(question['last_seen'])
+        st.session_state.current_lesson = progress.get("current_lesson", None)
+        st.session_state.question_index = progress.get("question_index", 0)
         
         return True
     except FileNotFoundError:
+        # Initialize default values for new users
+        st.session_state.score = 0
+        st.session_state.streak = 0
+        st.session_state.lessons_completed = 0
+        st.session_state.current_lesson = None
+        st.session_state.question_index = 0
+        
         return False
     except json.JSONDecodeError:
         st.error(f"Error reading progress file for {username}. File may be corrupted.")
@@ -150,21 +112,43 @@ def voice_to_text():
         return ""
 
 def check_answer():
-    user_answer = st.session_state.user_input
+    user_answer = st.session_state.get('user_input', '')
     correct_answer = st.session_state.correct_answer
     if clean_text(user_answer) == clean_text(correct_answer):
-        st.session_state.feedback = "🎉 Richtig!"
+        st.session_state.feedback = "🎉 Richtig! Weiter zur nächsten Frage..."
         st.session_state.score += 10
         st.session_state.streak += 1
         st.session_state.answer_correct = True
+        st.session_state.move_to_next = True
         st.session_state.colored_answer = None
+        st.session_state.review_items.append({
+            "question": st.session_state.current_question["prompt"],
+            "correct_answer": correct_answer,
+            "user_answer": user_answer,
+            "is_correct": True
+        })
     else:
         next_word = get_next_word(correct_answer, user_answer)
         st.session_state.feedback = f"Nicht ganz. Versuchen Sie es nochmal! Tipp: {next_word}"
         st.session_state.streak = 0
         st.session_state.answer_correct = False
         st.session_state.colored_answer = get_colored_answer(user_answer, correct_answer)
+        st.session_state.review_items.append({
+            "question": st.session_state.current_question["prompt"],
+            "correct_answer": correct_answer,
+            "user_answer": user_answer,
+            "is_correct": False
+        })
     st.session_state.attempts += 1
+
+def next_question():
+    st.session_state.question_index += 1
+    st.session_state.feedback = ""
+    st.session_state.attempts = 0
+    st.session_state.answer_correct = False
+    st.session_state.move_to_next = False
+    st.session_state.reset_input = True
+    st.session_state.colored_answer = None
 
 def load_achievements():
     try:
@@ -301,89 +285,15 @@ def custom_lesson_manager():
     
     return lessons_changed
 
-def initialize_question_history(lessons):
-    if 'question_history' not in st.session_state:
-        st.session_state.question_history = {}
-    
-    for lesson_name, lesson in lessons.items():
-        if lesson_name not in st.session_state.question_history:
-            st.session_state.question_history[lesson_name] = {}
-        for i, question in enumerate(lesson['questions']):
-            if i not in st.session_state.question_history[lesson_name]:
-                st.session_state.question_history[lesson_name][i] = {
-                    'last_seen': None,
-                    'correct_count': 0,
-                    'total_count': 0,
-                    'easiness_factor': 2.5,
-                    'interval': 1,
-                    'attempts': []
-                }
-            elif 'attempts' not in st.session_state.question_history[lesson_name][i]:
-                st.session_state.question_history[lesson_name][i]['attempts'] = []
-
-def get_next_review_date(history):
-    if history['last_seen'] is None:
-        return datetime.now()
-    return history['last_seen'] + timedelta(days=history['interval'])
-
-def update_question_history(lesson_name, question_index, correct, attempt_count):
-    history = st.session_state.question_history[lesson_name][question_index]
-    history['last_seen'] = datetime.now()
-    history['total_count'] += 1
-    if 'attempts' not in history:
-        history['attempts'] = []
-    history['attempts'].append(attempt_count)
-    if correct:
-        history['correct_count'] += 1
-        history['easiness_factor'] = max(1.3, history['easiness_factor'] + (0.1 - (5 - attempt_count) * (0.08 + (5 - attempt_count) * 0.02)))
-        if history['interval'] == 1:
-            history['interval'] = 6
-        elif history['interval'] == 6:
-            history['interval'] = 1
-        else:
-            history['interval'] *= history['easiness_factor']
-    else:
-        history['easiness_factor'] = max(1.3, history['easiness_factor'] - 0.2)
-        history['interval'] = 1
-
-def get_next_question(lesson_name, lesson):
-    current_time = datetime.now()
-    due_questions = []
-    for i, question in enumerate(lesson['questions']):
-        history = st.session_state.question_history[lesson_name][i]
-        if get_next_review_date(history) <= current_time:
-            due_questions.append(i)
-    
-    if due_questions:
-        return random.choice(due_questions)
-    else:
-        # If no questions are due, choose a random question
-        return random.randint(0, len(lesson['questions']) - 1)
-
-def display_spaced_repetition_stats():
-    st.sidebar.subheader("Spaced Repetition Statistiken")
-    total_questions = 0
-    total_correct = 0
-    total_attempts = 0
-    for lesson in st.session_state.question_history.values():
-        for question in lesson.values():
-            total_questions += 1
-            total_correct += question['correct_count']
-            total_attempts += sum(question.get('attempts', []))
-    
-    if total_questions > 0:
-        accuracy = (total_correct / total_questions) * 100
-        avg_attempts = total_attempts / total_questions
-        st.sidebar.metric("Gesamtgenauigkeit", f"{accuracy:.2f}%")
-        st.sidebar.metric("Durchschnittliche Versuche pro Frage", f"{avg_attempts:.2f}")
-
-def clear_input():
-    st.session_state.clear_input = True
-
 def main():
     st.set_page_config(layout="wide", page_title="Deutsch Lernspiel")
     
-    initialize_session_state()
+    # Initialize custom_lessons in session state if not present
+    if 'custom_lessons' not in st.session_state:
+        st.session_state.custom_lessons = {}
+    
+    if "username" not in st.session_state:
+        st.session_state.username = ""
     
     if not st.session_state.username:
         st.title("Willkommen beim Deutsch Lernspiel!")
@@ -397,128 +307,205 @@ def main():
             st.experimental_rerun()
         return
 
-    if not st.session_state.achievements:
+    # Load achievements
+    if "achievements" not in st.session_state:
         st.session_state.achievements = load_achievements()
-
-    all_lessons, built_in_lessons, custom_lessons = load_lessons()
-    initialize_question_history(all_lessons)
 
     # Navigation
     page = st.sidebar.radio("Navigation", ["Lernspiel", "Benutzerdefinierte Lektionen"])
 
     if page == "Lernspiel":
+        # Load lessons data
+        all_lessons, built_in_lessons, custom_lessons = load_lessons()
+
+        # Sidebar for lesson selection and stats
         with st.sidebar:
             st.title(f"Willkommen, {st.session_state.username}!")
+            
+            # Handle the case where current_lesson might not be set
+            if "current_lesson" not in st.session_state or st.session_state.current_lesson not in all_lessons:
+                st.session_state.current_lesson = list(all_lessons.keys())[0] if all_lessons else None
+            
+            # Create a list of lesson options with separators
+            lesson_options = []
+            if built_in_lessons:
+                lesson_options.append("--- Integrierte Lektionen ---")
+                lesson_options.extend(list(built_in_lessons.keys()))
+            if custom_lessons:
+                lesson_options.append("--- Benutzerdefinierte Lektionen ---")
+                lesson_options.extend(list(custom_lessons.keys()))
+            
+            if lesson_options:
+                selected_lesson = st.selectbox(
+                    "Wählen Sie eine Lektion:", 
+                    lesson_options,
+                    index=lesson_options.index(st.session_state.current_lesson) if st.session_state.current_lesson in lesson_options else 0
+                )
+                
+                # Update current_lesson only if a valid lesson is selected
+                if selected_lesson in all_lessons:
+                    st.session_state.current_lesson = selected_lesson
+            else:
+                st.warning("Keine Lektionen verfügbar. Bitte fügen Sie einige hinzu.")
+
             st.metric("Punktzahl", st.session_state.score)
             st.metric("Serie", st.session_state.streak)
             st.metric("Abgeschlossene Lektionen", st.session_state.lessons_completed)
-            
-            # Lesson selection
-            lesson_options = list(all_lessons.keys())
-            selected_lesson = st.selectbox("Wählen Sie eine Lektion:", lesson_options)
-            if selected_lesson != st.session_state.current_lesson:
-                st.session_state.current_lesson = selected_lesson
-                st.session_state.current_question_index = None
-                clear_input()
-                st.experimental_rerun()
-
             if st.button("Fortschritt zurücksetzen"):
                 st.session_state.score = 0
                 st.session_state.streak = 0
-                st.session_state.lessons_completed = 0
-                st.session_state.question_history = {}
-                initialize_question_history(all_lessons)
-                st.session_state.achievements = {}
+                st.session_state.question_index = 0
+                st.session_state.answer_correct = False
+                st.session_state.move_to_next = False
+                st.session_state.reset_input = True
+                st.session_state.colored_answer = None
+                st.session_state.review_items = []
+                st.session_state.current_lesson = list(all_lessons.keys())[0] if all_lessons else None
+                st.session_state.achievements = {}  # Reset achievements
                 save_progress(st.session_state.username)
-                save_achievements({})
+                save_achievements({})  # Reset achievements file
                 st.experimental_rerun()
 
-            display_spaced_repetition_stats()
-
+        # Display achievements
         display_achievements(st.session_state.achievements)
 
-        st.title("Deutsch Lernspiel")
-
-        if st.session_state.current_lesson:
+        if st.session_state.current_lesson in all_lessons:
             current_lesson = all_lessons[st.session_state.current_lesson]
-            if st.session_state.current_question_index is None:
-                st.session_state.current_question_index = get_next_question(st.session_state.current_lesson, current_lesson)
-                clear_input()
-            
-            question = current_lesson["questions"][st.session_state.current_question_index]
-            st.session_state.current_question = question
-            
-            st.header(question["prompt"])
-            st.session_state.correct_answer = question["answer"]
-            
-            # Text-to-speech button
-            if st.button("Hören Sie die Antwort"):
-                text_to_speech(question["answer"], lang='de')
-            
-            # Voice input option
-            if speech_recognition_available:
-                input_method = st.radio("Wie möchten Sie antworten?", ("Text", "Stimme"))
-            else:
-                input_method = "Text"
-                st.warning("Spracherkennung ist nicht verfügbar. Bitte verwenden Sie die Texteingabe.")
-            
-            if input_method == "Text":
-                with st.form(key='answer_form'):
-                    if st.session_state.clear_input:
-                        st.session_state.user_input = ""
-                        st.session_state.clear_input = False
-                    user_input = st.text_input("Ihre Antwort:", key="user_input", value=st.session_state.user_input)
-                    submit_button = st.form_submit_button(label='Antwort überprüfen', on_click=check_answer)
 
-                if submit_button:
-                    st.experimental_rerun()
-            else:
-                if st.button("Klicken Sie hier, um zu sprechen"):
-                    user_input = voice_to_text()
-                    if user_input:
-                        st.session_state.user_input = user_input
-                        st.write(f"Erkannte Antwort: {user_input}")
-                        check_answer()
-                        st.experimental_rerun()
+            # Initialize session state
+            if "review_items" not in st.session_state:
+                st.session_state.review_items = []
+            if "feedback" not in st.session_state:
+                st.session_state.feedback = ""
+            if "attempts" not in st.session_state:
+                st.session_state.attempts = 0
+            if "answer_correct" not in st.session_state:
+                st.session_state.answer_correct = False
+            if "move_to_next" not in st.session_state:
+                st.session_state.move_to_next = False
+            if "reset_input" not in st.session_state:
+                st.session_state.reset_input = False
+            if "colored_answer" not in st.session_state:
+                st.session_state.colored_answer = None
+
+            # Main game area
+            st.title("Deutsch Lernspiel")
             
-            if st.session_state.feedback:
-                if "Richtig" in st.session_state.feedback:
-                    st.success(st.session_state.feedback)
-                    update_question_history(st.session_state.current_lesson, st.session_state.current_question_index, True, st.session_state.attempts)
-                    save_progress(st.session_state.username)
-                    
-                    new_achievements, st.session_state.achievements = check_achievements(st.session_state.achievements)
-                    if new_achievements:
-                        st.success(f"Neue Errungenschaften freigeschaltet: {', '.join(new_achievements)}")
-                    
+            # Progress bar
+            if "questions" in current_lesson and len(current_lesson["questions"]) > 0:
+                if st.session_state.question_index < len(current_lesson["questions"]):
+                    progress = st.session_state.question_index / len(current_lesson["questions"])
+                    st.progress(progress)
+                else:
+                    st.progress(1.0)  # Set progress to 100% if all questions are answered
+            else:
+                st.warning("Diese Lektion enthält keine Fragen.")
+                return  # Exit the function if there are no questions
+
+            # Get current question
+            if st.session_state.question_index < len(current_lesson["questions"]):
+                question = current_lesson["questions"][st.session_state.question_index]
+                st.session_state.current_question = question
+                
+                st.header(question["prompt"])
+                
+                st.session_state.correct_answer = question["answer"]
+                
+                # Text-to-speech button
+                if st.button("Hören Sie die Antwort"):
+                    text_to_speech(question["answer"], lang='de')
+                
+                # Reset input if flag is set
+                if st.session_state.reset_input:
+                    st.session_state.user_input = ""
+                    st.session_state.reset_input = False
+                
+                # Add voice input option only if speech recognition is available
+                if speech_recognition_available:
+                    input_method = st.radio("Wie möchten Sie antworten?", ("Text", "Stimme"))
+                else:
+                    input_method = "Text"
+                    st.warning("Spracherkennung ist nicht verfügbar. Bitte verwenden Sie die Texteingabe.")
+                
+                if input_method == "Text":
+                    user_input = st.text_input("Ihre Antwort:", key="user_input", on_change=check_answer)
+                else:
+                    if st.button("Klicken Sie hier, um zu sprechen"):
+                        user_input = voice_to_text()
+                        if user_input:
+                            st.session_state.user_input = user_input
+                            st.write(f"Erkannte Antwort: {user_input}")
+                            check_answer()
+                
+                if st.session_state.feedback:
+                    if "Richtig" in st.session_state.feedback:
+                        st.success(st.session_state.feedback)
+                        time.sleep(1)  # Wait for 1 second
+                        next_question()
+                        save_progress(st.session_state.username)  # Save progress after each correct answer
+                        
+                        # Check for new achievements
+                        new_achievements, st.session_state.achievements = check_achievements(st.session_state.achievements)
+                        if new_achievements:
+                            st.success(f"Neue Errungenschaften freigeschaltet: {', '.join(new_achievements)}")
+                        
+                        st.experimental_rerun()
+                    else:
+                        st.warning(st.session_state.feedback)
+                        if st.session_state.colored_answer:
+                            st.markdown(f"Ihre Antwort bisher: {st.session_state.colored_answer}", unsafe_allow_html=True)
+                
+                if st.session_state.move_to_next:
+                    next_question()
+                    save_progress(st.session_state.username)  # Save progress after moving to next question
+                    st.experimental_rerun()
+
+            else:
+                st.balloons()
+                st.success("🎉 Herzlichen Glückwunsch! Sie haben alle Fragen in dieser Lektion beantwortet.")
+                st.write(f"Ihre Endpunktzahl: {st.session_state.score}")
+                
+                # Increment completed lessons
+                st.session_state.lessons_completed += 1
+                save_progress(st.session_state.username)  # Save progress after completing a lesson
+                
+                # Check for new achievements
+                new_achievements, st.session_state.achievements = check_achievements(st.session_state.achievements)
+                if new_achievements:
+                    st.success(f"Neue Errungenschaften freigeschaltet: {', '.join(new_achievements)}")
+                
+                # Review mode
+                st.subheader("Überprüfungsmodus")
+                for i, item in enumerate(st.session_state.review_items):
+                    with st.expander(f"Frage {i+1}: {item['question']}"):
+                        st.write(f"Richtige Antwort: {item['correct_answer']}")
+                        st.write(f"Ihre Antwort: {item['user_answer']}")
+                        if item['is_correct']:
+                            st.success("Richtig!")
+                        else:
+                            st.error("Falsch")
+                        if st.button(f"Hören Sie die richtige Antwort (F{i+1})", key=f"listen_{i}"):
+                            text_to_speech(item['correct_answer'], lang='de')
+                
+                if st.button("Nochmal spielen"):
+                    st.session_state.question_index = 0
                     st.session_state.feedback = ""
                     st.session_state.attempts = 0
-                    st.session_state.current_question_index = None
-                    clear_input()
+                    st.session_state.answer_correct = False
+                    st.session_state.move_to_next = False
+                    st.session_state.reset_input = True
+                    st.session_state.colored_answer = None
+                    st.session_state.review_items = []
+                    save_progress(st.session_state.username)
                     st.experimental_rerun()
-                else:
-                    st.warning(st.session_state.feedback)
-                    if st.session_state.colored_answer:
-                        st.markdown(f"Ihre Antwort bisher: {st.session_state.colored_answer}", unsafe_allow_html=True)
-            
-            if st.button("Nächste Frage", on_click=clear_input):
-                update_question_history(st.session_state.current_lesson, st.session_state.current_question_index, False, st.session_state.attempts)
-                st.session_state.attempts = 0
-                st.session_state.current_question_index = None
-                st.experimental_rerun()
-
-        else:
-            st.warning("Bitte wählen Sie eine Lektion aus.")
 
     elif page == "Benutzerdefinierte Lektionen":
         lessons_changed = custom_lesson_manager()
         if lessons_changed:
-            all_lessons, _, _ = load_lessons()
-            initialize_question_history(all_lessons)
             st.experimental_rerun()
 
     # Fun facts or tips
-    if random.random() < 0.3:
+    if random.random() < 0.3:  # 30% chance to show a tip
         st.sidebar.info("💡 Tipp: Üben Sie regelmäßig, um Ihre Deutschkenntnisse zu verbessern!")
 
 if __name__ == "__main__":
