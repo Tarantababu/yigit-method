@@ -264,9 +264,11 @@ def custom_lesson_manager():
 def initialize_question_history(lessons):
     if 'question_history' not in st.session_state:
         st.session_state.question_history = {}
-        for lesson_name, lesson in lessons.items():
-            for i, question in enumerate(lesson['questions']):
-                question_id = f"{lesson_name}_{i}"
+    
+    for lesson_name, lesson in lessons.items():
+        for i, question in enumerate(lesson['questions']):
+            question_id = f"{lesson_name}_{i}"
+            if question_id not in st.session_state.question_history:
                 st.session_state.question_history[question_id] = {
                     'last_seen': None,
                     'correct_count': 0,
@@ -342,16 +344,16 @@ def main():
     if "achievements" not in st.session_state:
         st.session_state.achievements = load_achievements()
 
+    # Load lessons data
+    all_lessons, built_in_lessons, custom_lessons = load_lessons()
+
+    # Initialize question history
+    initialize_question_history(all_lessons)
+
     # Navigation
     page = st.sidebar.radio("Navigation", ["Lernspiel", "Benutzerdefinierte Lektionen"])
 
     if page == "Lernspiel":
-        # Load lessons data
-        all_lessons, built_in_lessons, custom_lessons = load_lessons()
-
-        # Initialize question history
-        initialize_question_history(all_lessons)
-
         # Sidebar for stats
         with st.sidebar:
             st.title(f"Willkommen, {st.session_state.username}!")
@@ -438,6 +440,9 @@ def main():
     elif page == "Benutzerdefinierte Lektionen":
         lessons_changed = custom_lesson_manager()
         if lessons_changed:
+            # Reinitialize question history when lessons change
+            all_lessons, _, _ = load_lessons()
+            initialize_question_history(all_lessons)
             st.experimental_rerun()
 
     # Fun facts or tips
