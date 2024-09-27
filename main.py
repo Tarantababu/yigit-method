@@ -83,8 +83,20 @@ def text_to_speech(text, lang='de'):
         audio_bytes = f.read()
     os.remove(filename)
     audio_base64 = base64.b64encode(audio_bytes).decode()
-    audio_tag = f'<audio autoplay="true" src="data:audio/mp3;base64,{audio_base64}">'
-    st.markdown(audio_tag, unsafe_allow_html=True)
+    
+    # Create a download link for the audio
+    st.markdown(
+        f'<a href="data:audio/mp3;base64,{audio_base64}" download="audio.mp3">Audio herunterladen</a>',
+        unsafe_allow_html=True
+    )
+    
+    # Add a play button that will work on both desktop and mobile
+    st.markdown(f"""
+    <audio id="audio" style="display:none">
+        <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
+    </audio>
+    <button onclick="document.getElementById('audio').play()">Abspielen</button>
+    """, unsafe_allow_html=True)
 
 def voice_to_text():
     if not speech_recognition_available:
@@ -353,6 +365,7 @@ def main():
             if custom_lessons:
                 lesson_options.append("--- Benutzerdefinierte Lektionen ---")
                 lesson_options.extend(list(custom_lessons.keys()))
+            
             if lesson_options:
                 selected_lesson = st.selectbox(
                     "Wählen Sie eine Lektion:", 
@@ -484,16 +497,13 @@ def main():
                 
                 # Adjust UI elements for mobile
                 if is_mobile:
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        if st.button("Hören Sie die Antwort"):
-                            text_to_speech(question["answer"], lang='de')
+                    if st.button("Hören Sie die Antwort"):
+                        text_to_speech(question["answer"], lang='de')
                     
-                    with col2:
-                        if speech_recognition_available:
-                            input_method = st.radio("Antwortmethode", ("Text", "Stimme"))
-                        else:
-                            input_method = "Text"
+                    if speech_recognition_available:
+                        input_method = st.radio("Antwortmethode", ("Text", "Stimme"))
+                    else:
+                        input_method = "Text"
                     
                     if input_method == "Text":
                         user_input = st.text_input("Ihre Antwort:", key="user_input", on_change=check_answer)
