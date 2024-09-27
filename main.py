@@ -8,16 +8,6 @@ from gtts import gTTS
 import os
 import base64
 
-# Try to import reportlab, but don't fail if it's not available
-try:
-    from reportlab.lib import colors
-    from reportlab.lib.pagesizes import A4
-    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-    from reportlab.lib.units import cm
-    pdf_export_available = True
-except ImportError:
-    pdf_export_available = False
-
 # Try to import speech_recognition, but don't fail if it's not available
 try:
     import speech_recognition as sr
@@ -202,12 +192,12 @@ def check_achievements(achievements):
     return new_achievements, achievements
 
 def display_achievements(achievements):
-    st.subheader("Errungenschaften")
+    st.sidebar.subheader("Errungenschaften")
     if achievements:
         for badge, description in achievements.items():
-            st.success(f"🏆 {badge}: {description}")
+            st.sidebar.success(f"🏆 {badge}: {description}")
     else:
-        st.info("Noch keine Errungenschaften freigeschaltet.")
+        st.sidebar.info("Noch keine Errungenschaften freigeschaltet.")
 
 def load_lessons():
     # Load built-in lessons
@@ -291,85 +281,8 @@ def custom_lesson_manager():
     
     return lessons_changed
 
-def export_lessons_as_pdf(lessons, filename="flashcards.pdf"):
-    if not pdf_export_available:
-        st.error("PDF Export ist nicht verfügbar. Bitte installieren Sie 'reportlab'.")
-        return None
-
-    doc = SimpleDocTemplate(filename, pagesize=A4, rightMargin=1*cm, leftMargin=1*cm, topMargin=1*cm, bottomMargin=1*cm)
-    elements = []
-
-    for lesson_name, lesson in lessons.items():
-        # Add lesson name
-        elements.append(Table([[lesson_name]], colWidths=[19*cm], rowHeights=[1*cm]))
-        elements[-1].setStyle(TableStyle([
-            ('BACKGROUND', (0,0), (-1,-1), colors.grey),
-            ('TEXTCOLOR', (0,0), (-1,-1), colors.whitesmoke),
-            ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-            ('FONTNAME', (0,0), (-1,-1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0,0), (-1,-1), 14),
-            ('BOTTOMPADDING', (0,0), (-1,-1), 12),
-            ('TOPPADDING', (0,0), (-1,-1), 12),
-        ]))
-
-        # Add questions and answers
-        for question in lesson['questions']:
-            # Question card
-            question_table = Table([[question['prompt']]], colWidths=[9*cm], rowHeights=[6*cm])
-            question_table.setStyle(TableStyle([
-                ('BACKGROUND', (0,0), (-1,-1), colors.beige),
-                ('TEXTCOLOR', (0,0), (-1,-1), colors.black),
-                ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-                ('FONTNAME', (0,0), (-1,-1), 'Helvetica'),
-                ('FONTSIZE', (0,0), (-1,-1), 12),
-                ('TOPPADDING', (0,0), (-1,-1), 6),
-                ('BOTTOMPADDING', (0,0), (-1,-1), 6),
-                ('BOX', (0,0), (-1,-1), 1, colors.black),
-            ]))
-
-            # Answer card
-            answer_table = Table([[question['answer']]], colWidths=[9*cm], rowHeights=[6*cm])
-            answer_table.setStyle(TableStyle([
-                ('BACKGROUND', (0,0), (-1,-1), colors.lightgreen),
-                ('TEXTCOLOR', (0,0), (-1,-1), colors.black),
-                ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-                ('FONTNAME', (0,0), (-1,-1), 'Helvetica'),
-                ('FONTSIZE', (0,0), (-1,-1), 12),
-                ('TOPPADDING', (0,0), (-1,-1), 6),
-                ('BOTTOMPADDING', (0,0), (-1,-1), 6),
-                ('BOX', (0,0), (-1,-1), 1, colors.black),
-            ]))
-
-            # Add question and answer cards side by side
-            elements.append(Table([[question_table, answer_table]], colWidths=[9.5*cm, 9.5*cm], rowHeights=[6.5*cm]))
-
-    doc.build(elements)
-    return filename
-
 def main():
     st.set_page_config(layout="wide", page_title="Deutsch Lernspiel")
-    
-    # Check if the app is being viewed on a mobile device
-    is_mobile = st.experimental_get_query_params().get("view", [""])[0] == "mobile"
-
-    # Adjust layout based on device type
-    if is_mobile:
-        st.markdown("""
-        <style>
-        .reportview-container .main .block-container {
-            max-width: 100%;
-            padding-top: 2rem;
-            padding-right: 1rem;
-            padding-left: 1rem;
-            padding-bottom: 2rem;
-        }
-        .sidebar .sidebar-content {
-            width: 100%;
-        }
-        </style>
-        """, unsafe_allow_html=True)
     
     # Initialize custom_lessons in session state if not present
     if 'custom_lessons' not in st.session_state:
@@ -395,34 +308,14 @@ def main():
         st.session_state.achievements = load_achievements()
 
     # Navigation
-    if is_mobile:
-        page = st.radio("Navigation", ["Lernspiel", "Benutzerdefinierte Lektionen"])
-    else:
-        page = st.sidebar.radio("Navigation", ["Lernspiel", "Benutzerdefinierte Lektionen"])
-
-    # Add PDF export button only if reportlab is available
-    all_lessons, _, _ = load_lessons()
-    if pdf_export_available:
-        if st.button("Alle Lektionen als PDF exportieren"):
-            pdf_file = export_lessons_as_pdf(all_lessons)
-            if pdf_file:
-                with open(pdf_file, "rb") as f:
-                    bytes_data = f.read()
-                st.download_button(
-                    label="PDF herunterladen",
-                    data=bytes_data,
-                    file_name="flashcards.pdf",
-                    mime="application/pdf"
-                )
-    else:
-        st.warning("PDF Export ist nicht verfügbar. Installieren Sie 'reportlab', um diese Funktion zu nutzen.")
+    page = st.sidebar.radio("Navigation", ["Lernspiel", "Benutzerdefinierte Lektionen"])
 
     if page == "Lernspiel":
         # Load lessons data
         all_lessons, built_in_lessons, custom_lessons = load_lessons()
 
         # Sidebar for lesson selection and stats
-        if is_mobile:
+        with st.sidebar:
             st.title(f"Willkommen, {st.session_state.username}!")
             
             # Handle the case where current_lesson might not be set
@@ -451,11 +344,9 @@ def main():
             else:
                 st.warning("Keine Lektionen verfügbar. Bitte fügen Sie einige hinzu.")
 
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Punktzahl", st.session_state.score)
-            col2.metric("Serie", st.session_state.streak)
-            col3.metric("Abgeschlossene Lektionen", st.session_state.lessons_completed)
-            
+            st.metric("Punktzahl", st.session_state.score)
+            st.metric("Serie", st.session_state.streak)
+            st.metric("Abgeschlossene Lektionen", st.session_state.lessons_completed)
             if st.button("Fortschritt zurücksetzen"):
                 st.session_state.score = 0
                 st.session_state.streak = 0
@@ -470,60 +361,9 @@ def main():
                 save_progress(st.session_state.username)
                 save_achievements({})  # Reset achievements file
                 st.experimental_rerun()
-        else:
-            with st.sidebar:
-                st.title(f"Willkommen, {st.session_state.username}!")
-                
-                # Handle the case where current_lesson might not be set
-                if "current_lesson" not in st.session_state or st.session_state.current_lesson not in all_lessons:
-                    st.session_state.current_lesson = list(all_lessons.keys())[0] if all_lessons else None
-                
-                # Create a list of lesson options with separators
-                lesson_options = []
-                if built_in_lessons:
-                    lesson_options.append("--- Integrierte Lektionen ---")
-                    lesson_options.extend(list(built_in_lessons.keys()))
-                if custom_lessons:
-                    lesson_options.append("--- Benutzerdefinierte Lektionen ---")
-                    lesson_options.extend(list(custom_lessons.keys()))
-                
-                if lesson_options:
-                    selected_lesson = st.selectbox(
-                        "Wählen Sie eine Lektion:", 
-                        lesson_options,
-                        index=lesson_options.index(st.session_state.current_lesson) if st.session_state.current_lesson in lesson_options else 0
-                    )
-                    
-                    # Update current_lesson only if a valid lesson is selected
-                    if selected_lesson in all_lessons:
-                        st.session_state.current_lesson = selected_lesson
-                else:
-                    st.warning("Keine Lektionen verfügbar. Bitte fügen Sie einige hinzu.")
-
-                st.metric("Punktzahl", st.session_state.score)
-                st.metric("Serie", st.session_state.streak)
-                st.metric("Abgeschlossene Lektionen", st.session_state.lessons_completed)
-                if st.button("Fortschritt zurücksetzen"):
-                    st.session_state.score = 0
-                    st.session_state.streak = 0
-                    st.session_state.question_index = 0
-                    st.session_state.answer_correct = False
-                    st.session_state.move_to_next = False
-                    st.session_state.reset_input = True
-                    st.session_state.colored_answer = None
-                    st.session_state.review_items = []
-                    st.session_state.current_lesson = list(all_lessons.keys())[0] if all_lessons else None
-                    st.session_state.achievements = {}  # Reset achievements
-                    save_progress(st.session_state.username)
-                    save_achievements({})  # Reset achievements file
-                    st.experimental_rerun()
 
         # Display achievements
-        if is_mobile:
-            with st.expander("Errungenschaften"):
-                display_achievements(st.session_state.achievements)
-        else:
-            display_achievements(st.session_state.achievements)
+        display_achievements(st.session_state.achievements)
 
         if st.session_state.current_lesson in all_lessons:
             current_lesson = all_lessons[st.session_state.current_lesson]
@@ -571,41 +411,25 @@ def main():
                 if st.button("Hören Sie die Antwort"):
                     text_to_speech(question["answer"], lang='de')
                 
-                # Adjust UI elements for mobile
-                if is_mobile:
-                    if speech_recognition_available:
-                        input_method = st.radio("Antwortmethode", ("Text", "Stimme"))
-                    else:
-                        input_method = "Text"
-                    
-                    if input_method == "Text":
-                        user_input = st.text_input("Ihre Antwort:", key="user_input", on_change=check_answer)
-                    else:
-                        if st.button("Sprechen"):
-                            user_input = voice_to_text()
-                            st.session_state.user_input = user_input
-                            st.write(f"Erkannte Antwort: {user_input}")
-                            check_answer()
+                # Reset input if flag is set
+                if st.session_state.reset_input:
+                    st.session_state.user_input = ""
+                    st.session_state.reset_input = False
+                
+                # Add voice input option only if speech recognition is available
+                if speech_recognition_available:
+                    input_method = st.radio("Wie möchten Sie antworten?", ("Text", "Stimme"))
                 else:
-                    # Reset input if flag is set
-                    if st.session_state.reset_input:
-                        st.session_state.user_input = ""
-                        st.session_state.reset_input = False
-                    
-                    # Add voice input option only if speech recognition is available
-                    if speech_recognition_available:
-                        input_method = st.radio("Wie möchten Sie antworten?", ("Text", "Stimme"))
-                    else:
-                        input_method = "Text"
-                    
-                    if input_method == "Text":
-                        user_input = st.text_input("Ihre Antwort:", key="user_input", on_change=check_answer)
-                    else:
-                        if st.button("Klicken Sie hier, um zu sprechen"):
-                            user_input = voice_to_text()
-                            st.session_state.user_input = user_input
-                            st.write(f"Erkannte Antwort: {user_input}")
-                            check_answer()
+                    input_method = "Text"
+                
+                if input_method == "Text":
+                    user_input = st.text_input("Ihre Antwort:", key="user_input", on_change=check_answer)
+                else:
+                    if st.button("Klicken Sie hier, um zu sprechen"):
+                        user_input = voice_to_text()
+                        st.session_state.user_input = user_input
+                        st.write(f"Erkannte Antwort: {user_input}")
+                        check_answer()
                 
                 if st.session_state.feedback:
                     if "Richtig" in st.session_state.feedback:
@@ -676,10 +500,7 @@ def main():
 
     # Fun facts or tips
     if random.random() < 0.3:  # 30% chance to show a tip
-        if is_mobile:
-            st.info("💡 Tipp: Üben Sie regelmäßig, um Ihre Deutschkenntnisse zu verbessern!")
-        else:
-            st.sidebar.info("💡 Tipp: Üben Sie regelmäßig, um Ihre Deutschkenntnisse zu verbessern!")
+        st.sidebar.info("💡 Tipp: Üben Sie regelmäßig, um Ihre Deutschkenntnisse zu verbessern!")
 
 if __name__ == "__main__":
     main()
