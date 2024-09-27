@@ -49,6 +49,8 @@ def initialize_session_state():
         st.session_state.current_lesson = None
     if "current_question_index" not in st.session_state:
         st.session_state.current_question_index = None
+    if "clear_input" not in st.session_state:
+        st.session_state.clear_input = False
 
 def datetime_to_str(obj):
     if isinstance(obj, datetime):
@@ -376,7 +378,7 @@ def display_spaced_repetition_stats():
         st.sidebar.metric("Durchschnittliche Versuche pro Frage", f"{avg_attempts:.2f}")
 
 def clear_input():
-    st.session_state.user_input = ""
+    st.session_state.clear_input = True
 
 def main():
     st.set_page_config(layout="wide", page_title="Deutsch Lernspiel")
@@ -461,7 +463,10 @@ def main():
                 st.warning("Spracherkennung ist nicht verfügbar. Bitte verwenden Sie die Texteingabe.")
             
             if input_method == "Text":
-                user_input = st.text_input("Ihre Antwort:", key="user_input", on_change=check_answer)
+                if st.session_state.clear_input:
+                    st.session_state.user_input = ""
+                    st.session_state.clear_input = False
+                user_input = st.text_input("Ihre Antwort:", key="user_input", value=st.session_state.user_input, on_change=check_answer)
             else:
                 if st.button("Klicken Sie hier, um zu sprechen"):
                     user_input = voice_to_text()
